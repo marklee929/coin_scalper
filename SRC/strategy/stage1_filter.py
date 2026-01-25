@@ -2,7 +2,7 @@ from typing import List, Dict, Optional
 import requests
 from datetime import datetime, timezone
 
-from config.exchange import BINANCE_BASE_URL, QUOTE_ASSET
+from config.exchange import BINANCE_BASE_URL, QUOTE_ASSET, CANDLE_LIMITS
 from data.fetch_price import get_all_tickers_24hr, get_candle_data_v2
 from utils.logger import logger
 from utils.universe_cache import load_or_refresh_universe
@@ -62,7 +62,9 @@ def is_deep_drawdown_without_rebound(base_symbol: str,
                                      min_drawdown_pct: float = 70.0,
                                      max_drawdown_pct: float = 90.0,
                                      rebound_ratio: float = 1.2,
-                                     days: int = 60) -> bool:
+                                     days: int = None) -> bool:
+    if days is None:
+        days = CANDLE_LIMITS.get("1d", 120)
     candles = get_candle_data_v2(base_symbol, quote_asset, interval="1d", size=days)
     if len(candles) < 10:
         return False
@@ -125,7 +127,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         if is_recent_listing(symbol_pair, max_days=max_new_listing_days):
             continue
 
-        candles_1h = get_candle_data_v2(base_symbol, quote_asset, interval="1h", size=50)
+        candles_1h = get_candle_data_v2(
+            base_symbol,
+            quote_asset,
+            interval="1h",
+            size=CANDLE_LIMITS.get("1h", 1000)
+        )
         if len(candles_1h) < 3:
             continue
 
