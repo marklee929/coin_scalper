@@ -6,6 +6,7 @@ from strategy.hold_watch import start_scalping_thread
 from strategy.stage1_filter import stage1_scan
 from utils.logger import logger  # 로거 사용
 from storage.repo import fetch_open_positions
+from config.exchange import MAX_OPEN_POSITIONS
 from utils.ws_price import start_price_stream
 
 
@@ -42,6 +43,11 @@ def load_symbols(args) -> list:
 
     # 3) 기본: 전체 유니버스 스캔 → 1차 필터 통과 리스트
     open_positions = fetch_open_positions()
+    if len(open_positions) >= MAX_OPEN_POSITIONS:
+        logger.info("⚠️ max 포지션 도달: 스캔 중지, watch-only 모드")
+        symbols = open_positions
+        return symbols
+
     candidates = stage1_scan(exclude_symbols=set(open_positions))
     symbols = [c["symbol"] for c in candidates]
     if args.max_watch and args.max_watch > 0:

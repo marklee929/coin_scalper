@@ -6,14 +6,15 @@ from utils.capital import calc_order_quote
 from strategy.watch_trend import get_trend_state, get_relative_position
 from trade.order_executor import buy_market, sell_market
 from utils.telegram import send_telegram_message
-from utils.candle_log import get_hourly_candles, get_1m_candles
+from utils.candle_log import get_hourly_candles
 from utils.number import safe_int
 from utils.logger import logger
-from storage.repo import append_event, upsert_position, save_snapshot
+from storage.repo import append_event, upsert_position, save_snapshot, fetch_open_positions
 from utils.ws_price import get_price as get_ws_price
 
 COOLDOWN_AFTER_TRADE = 60
 BALANCE_REFRESH_SEC = 120
+CANDLE_REFRESH_SEC = 300
 trading_state = {
     "holding": False,
     "buy_price": 0.0,
@@ -59,6 +60,8 @@ def scalping_loop(symbol: str):
     balances_cache = balances
     krw_cache = krw
     last_balance_ts = time.time()
+    last_candle_ts = 0.0
+    cached_c1h = []
     trading_state.update({
         "holding": False,
         "qty": 0.0,
@@ -120,13 +123,15 @@ def scalping_loop(symbol: str):
                 min_interval_sec=60,
             )
 
-            # 🔍 캔들 데이터
-            c1h = get_hourly_candles(symbol, 12)  # 최근 12시간
-            m1 = get_1m_candles(symbol, 50)   # 최근 50분
+            # 🔍 캔들 데이터 (1h만, 주기적 갱신)
+            if now - last_candle_ts >= CANDLE_REFRESH_SEC or not cached_c1h:
+                cached_c1h = get_hourly_candles(symbol, 12)  # 최근 12시간
+                last_candle_ts = now
+            c1h = cached_c1h
 
             # 📊 분석
-            minute_30_trend = get_trend_state(m1[-30:])  # 30분 추세
-            minute_10_trend = get_trend_state(m1[-10:])  # 30분 추세
+            minute_30_trend = get_trend_state(c1h[-6:])  # 최근 6시간 추세
+            minute_10_trend = get_trend_state(c1h[-3:])  # 최근 3시간 추세
             relative_pos = get_relative_position(c1h, price)
 
             low_candidates = [c['low'] for c in c1h[-6:]]
@@ -200,7 +205,7 @@ def scalping_loop(symbol: str):
                 #logger.info(f"보유자금 { krw }, { krw >= MIN_ORDER_KRW }")
                 #logger.info(f"최근 매도 { now - last_sell_time > 600 }")
                 # 📈 재매수 조건
-                open_positions = len(balances_cache)
+                open_positions = len(fetch_open_positions())
                 if open_positions >= MAX_OPEN_POSITIONS:
                     logger.info(f"🚫 신규 진입 제한: open_positions={open_positions}, max={MAX_OPEN_POSITIONS}")
                     time.sleep(5)

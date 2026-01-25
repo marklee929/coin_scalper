@@ -6,6 +6,7 @@ from config.exchange import BINANCE_BASE_URL, QUOTE_ASSET, CANDLE_LIMITS
 from data.fetch_price import get_all_tickers_24hr, get_candle_data_v2
 from utils.logger import logger
 from utils.universe_cache import load_or_refresh_universe
+from storage.repo import get_latest_snapshot, save_snapshot
 
 EXCLUDED_BASE_SUFFIXES = ("UP", "DOWN", "BULL", "BEAR", "3L", "3S", "5L", "5S")
 
@@ -62,6 +63,16 @@ def is_recent_listing(symbol_pair: str, max_days: int = 2) -> bool:
     return age_days <= max_days
 
 
+def _load_listing_cache(today: str, quote_asset: str) -> Dict[str, bool]:
+    latest = get_latest_snapshot("LISTING_CACHE")
+    if not latest:
+        return {}
+    data = latest.get("data", {})
+    if data.get("date") != today or data.get("quoteAsset") != quote_asset:
+        return {}
+    return data.get("recent", {}) or {}
+
+
 def is_deep_drawdown_without_rebound(base_symbol: str,
                                      quote_asset: str = QUOTE_ASSET,
                                      min_drawdown_pct: float = 70.0,
@@ -113,6 +124,9 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
 
     results = []
     exclude = {s.upper() for s in (exclude_symbols or set())}
+    today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+    listing_cache = _load_listing_cache(today, quote_asset)
+    listing_dirty = False
     for info in sorted(symbols, key=lambda x: x["symbol"]):
         symbol_pair = info["symbol"]
         base_symbol = info["baseAsset"]
@@ -133,7 +147,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         if quote_volume < min_quote_volume or trade_count < min_trade_count:
             continue
 
-        if is_recent_listing(symbol_pair, max_days=max_new_listing_days):
+        cached_recent = listing_cache.get(symbol_pair)
+        if cached_recent is None:
+            cached_recent = is_recent_listing(symbol_pair, max_days=max_new_listing_days)
+            listing_cache[symbol_pair] = cached_recent
+            listing_dirty = True
+        if cached_recent:
             continue
 
         candles_1h = get_candle_data_v2(
@@ -157,6 +176,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         })
 
     logger.info(f"✅ 1차 필터 통과 코인 수: {len(results)}")
+    if listing_dirty:
+        save_snapshot(
+            "LISTING_CACHE",
+            {"date": today, "quoteAsset": quote_asset, "recent": listing_cache},
+            force=True,
+        )
     return results
 
 
