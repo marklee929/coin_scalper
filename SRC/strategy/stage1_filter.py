@@ -15,11 +15,16 @@ def _is_excluded_symbol(base_asset: str) -> bool:
     return any(base.endswith(suffix) for suffix in EXCLUDED_BASE_SUFFIXES)
 
 
+def _is_valid_symbol(base_asset: str) -> bool:
+    base = base_asset.upper()
+    return base.isascii() and base.isalnum()
+
+
 def get_spot_symbols(quote_asset: str = QUOTE_ASSET) -> List[Dict]:
     symbols = []
     for s in load_or_refresh_universe(quote_asset=quote_asset):
         base = s.get("baseAsset", "")
-        if not base or _is_excluded_symbol(base):
+        if not base or _is_excluded_symbol(base) or not _is_valid_symbol(base):
             continue
 
         symbols.append({

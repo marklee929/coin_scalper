@@ -1,9 +1,13 @@
 import json
+import random
 import threading
 import time
+import re
 from typing import List, Optional, Dict
 
 from utils.logger import logger
+from utils.symbols import format_symbol
+from config.exchange import QUOTE_ASSET
 
 try:
     import websocket  # type: ignore
@@ -11,12 +15,22 @@ except Exception:  # pragma: no cover - optional dependency
     websocket = None
 
 _PRICE_CACHE: Dict[str, float] = {}
+_VALID_SYMBOL_RE = re.compile(r"^[A-Z0-9]+$")
 
 
 def _build_stream_url(symbols: List[str]) -> Optional[str]:
     if not symbols:
         return None
-    streams = "/".join([f"{s.lower()}@miniTicker" for s in symbols])
+    valid_streams = []
+    for s in symbols:
+        full = format_symbol(s, QUOTE_ASSET).upper()
+        if not _VALID_SYMBOL_RE.match(full):
+            logger.warning(f"WS skip invalid symbol: {full}")
+            continue
+        valid_streams.append(f"{full.lower()}@miniTicker")
+    if not valid_streams:
+        return None
+    streams = "/".join(valid_streams)
     return f"wss://stream.binance.com:9443/stream?streams={streams}"
 
 
@@ -62,11 +76,13 @@ class MiniTickerStream:
         self.start()
 
     def _run(self) -> None:
+        backoff = 1.0
         while not self._stop.is_set():
             url = _build_stream_url(self._symbols)
             if not url:
                 time.sleep(5)
                 continue
+            logger.info(f"WS connect: {url}")
 
             def on_message(_, message: str):
                 try:
@@ -94,9 +110,12 @@ class MiniTickerStream:
 
             try:
                 self._ws.run_forever(ping_interval=30, ping_timeout=10)
+                backoff = 1.0
             except Exception as e:
                 logger.warning(f"WS run_forever error: {e}")
-            time.sleep(3)
+            sleep_sec = min(backoff, 60.0) + random.random()
+            time.sleep(sleep_sec)
+            backoff = min(backoff * 2.0, 60.0)
 
 
 _GLOBAL_STREAM: Optional[MiniTickerStream] = None
