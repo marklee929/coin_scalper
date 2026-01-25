@@ -9,12 +9,14 @@ from utils.telegram import send_telegram_message
 from utils.candle_log import get_hourly_candles
 from utils.number import safe_int
 from utils.logger import logger
-from storage.repo import append_event, upsert_position, save_snapshot, fetch_open_positions
+from storage.repo import append_event, upsert_position, save_snapshot, fetch_open_positions, get_latest_snapshot
 from utils.ws_price import get_price as get_ws_price
 
 COOLDOWN_AFTER_TRADE = 60
 BALANCE_REFRESH_SEC = 120
 CANDLE_REFRESH_SEC = 300
+REST_PRICE_REFRESH_SEC = 10
+ACTIVE_WATCHLIST_REFRESH_SEC = 30
 trading_state = {
     "holding": False,
     "buy_price": 0.0,
@@ -62,6 +64,11 @@ def scalping_loop(symbol: str):
     last_balance_ts = time.time()
     last_candle_ts = 0.0
     cached_c1h = []
+    last_rest_price_ts = 0.0
+    last_rest_price = 0.0
+    last_min_order_log_ts = 0.0
+    last_active_watch_ts = 0.0
+    active_watchlist = None
     trading_state.update({
         "holding": False,
         "qty": 0.0,
@@ -89,12 +96,25 @@ def scalping_loop(symbol: str):
                 time.sleep(10)
                 continue
 
+            if now - last_active_watch_ts >= ACTIVE_WATCHLIST_REFRESH_SEC:
+                snap = get_latest_snapshot("ACTIVE_WATCHLIST")
+                if snap and isinstance(snap.get("data"), list):
+                    active_watchlist = set(snap["data"])
+                last_active_watch_ts = now
+
+            if active_watchlist is not None and symbol not in active_watchlist and not trading_state["holding"]:
+                time.sleep(30)
+                continue
+
             ws_price = get_ws_price(symbol)
             if ws_price is not None:
                 price = ws_price
             else:
-                price_data = get_current_price(QUOTE_ASSET, symbol)
-                price = price_data.get("price", 0)
+                if now - last_rest_price_ts >= REST_PRICE_REFRESH_SEC:
+                    price_data = get_current_price(QUOTE_ASSET, symbol)
+                    last_rest_price = price_data.get("price", 0)
+                    last_rest_price_ts = now
+                price = last_rest_price
             if price == 0:
                 time.sleep(5)
                 continue
@@ -109,6 +129,12 @@ def scalping_loop(symbol: str):
             trading_state.update({"holding": holding, "qty": qty})
             if holding and trading_state["buy_price"] == 0.0:
                 trading_state.update({"buy_price": price, "high_price": price})
+
+            open_positions_count = len(fetch_open_positions())
+            if not holding and open_positions_count >= MAX_OPEN_POSITIONS:
+                logger.info("⚠️ max 포지션 도달: watch-only 모드, 스캔 스킵")
+                time.sleep(5)
+                continue
 
             save_snapshot(
                 kind=f"STATE:{symbol}",
@@ -205,25 +231,32 @@ def scalping_loop(symbol: str):
                 #logger.info(f"보유자금 { krw }, { krw >= MIN_ORDER_KRW }")
                 #logger.info(f"최근 매도 { now - last_sell_time > 600 }")
                 # 📈 재매수 조건
-                open_positions = len(fetch_open_positions())
-                if open_positions >= MAX_OPEN_POSITIONS:
-                    logger.info(f"🚫 신규 진입 제한: open_positions={open_positions}, max={MAX_OPEN_POSITIONS}")
+                if open_positions_count >= MAX_OPEN_POSITIONS:
+                    logger.info(f"🚫 신규 진입 제한: open_positions={open_positions_count}, max={MAX_OPEN_POSITIONS}")
+                    time.sleep(5)
+                    continue
+
+                entry_signal = (
+                    price > bottom * 1.005
+                    and (minute_30_trend == "up" or (minute_30_trend == "side" and minute_10_trend == "up"))
+                    and now - last_sell_time > 600
+                )
+                if not entry_signal:
                     time.sleep(5)
                     continue
 
                 order_amount = calc_order_quote(krw_cache, ALLOC_PCT, MAX_OPEN_POSITIONS, RESERVE_QUOTE)
                 if order_amount < MIN_ORDER_QUOTE:
-                    logger.info(
-                        f"🚫 주문 금액 부족: order={order_amount:.2f} {QUOTE_ASSET}, "
-                        f"min={MIN_ORDER_QUOTE} {QUOTE_ASSET}"
-                    )
+                    if now - last_min_order_log_ts >= 300:
+                        logger.info(
+                            f"🚫 주문 금액 부족: order={order_amount:.2f} {QUOTE_ASSET}, "
+                            f"min={MIN_ORDER_QUOTE} {QUOTE_ASSET}"
+                        )
+                        last_min_order_log_ts = now
                     time.sleep(5)
                     continue
 
-                if (
-                    price > bottom * 1.005 and (minute_30_trend == "up" or (minute_30_trend == "side" and minute_10_trend == "up"))
-                    and now - last_sell_time > 600
-                ):
+                if entry_signal:
                     res = buy_market(symbol, order_amount)
                     logger.info(f"📥 재매수: 1시간봉 저점 대비 +2% 상승 & 실시간 추세 상승")
                     trading_state.update({

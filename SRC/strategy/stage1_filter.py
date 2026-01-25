@@ -73,6 +73,16 @@ def _load_listing_cache(today: str, quote_asset: str) -> Dict[str, bool]:
     return data.get("recent", {}) or {}
 
 
+def _load_drawdown_cache(today: str, quote_asset: str) -> Dict[str, bool]:
+    latest = get_latest_snapshot("DRAWDOWN_CACHE")
+    if not latest:
+        return {}
+    data = latest.get("data", {})
+    if data.get("date") != today or data.get("quoteAsset") != quote_asset:
+        return {}
+    return data.get("deep", {}) or {}
+
+
 def is_deep_drawdown_without_rebound(base_symbol: str,
                                      quote_asset: str = QUOTE_ASSET,
                                      min_drawdown_pct: float = 70.0,
@@ -127,6 +137,11 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
     today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
     listing_cache = _load_listing_cache(today, quote_asset)
     listing_dirty = False
+    drawdown_cache = _load_drawdown_cache(today, quote_asset)
+    drawdown_dirty = False
+
+    # 1) ticker/24hr 배치로 후보 축소
+    candidates = []
     for info in sorted(symbols, key=lambda x: x["symbol"]):
         symbol_pair = info["symbol"]
         base_symbol = info["baseAsset"]
@@ -147,6 +162,10 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         if quote_volume < min_quote_volume or trade_count < min_trade_count:
             continue
 
+        candidates.append((symbol_pair, base_symbol, change_pct, quote_volume, trade_count))
+
+    # 2) 후보만 REST 보조 체크
+    for symbol_pair, base_symbol, change_pct, quote_volume, trade_count in candidates:
         cached_recent = listing_cache.get(symbol_pair)
         if cached_recent is None:
             cached_recent = is_recent_listing(symbol_pair, max_days=max_new_listing_days)
@@ -164,7 +183,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         if len(candles_1h) < 3:
             continue
 
-        if is_deep_drawdown_without_rebound(base_symbol, quote_asset):
+        cached_dd = drawdown_cache.get(base_symbol)
+        if cached_dd is None:
+            cached_dd = is_deep_drawdown_without_rebound(base_symbol, quote_asset)
+            drawdown_cache[base_symbol] = cached_dd
+            drawdown_dirty = True
+        if cached_dd:
             continue
 
         results.append({
@@ -180,6 +204,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
         save_snapshot(
             "LISTING_CACHE",
             {"date": today, "quoteAsset": quote_asset, "recent": listing_cache},
+            force=True,
+        )
+    if drawdown_dirty:
+        save_snapshot(
+            "DRAWDOWN_CACHE",
+            {"date": today, "quoteAsset": quote_asset, "deep": drawdown_cache},
             force=True,
         )
     return results

@@ -3,7 +3,8 @@ from utils.logger import logger
 
 def get_trend_state(candles: list) -> str:
     if not candles or len(candles) < 3:
-        logger.warning("❌ 추세 판별용 캔들 부족: len(candles) < 3")
+        # Not enough candles to determine trend; avoid warning spam.
+        logger.debug("❌ 추세 판별용 캔들 부족: len(candles) < 3")
         return "side"
 
     score = 0
@@ -28,7 +29,7 @@ def get_trend_state(candles: list) -> str:
 
 def is_trend_rising(candles: list, depth: int = 4) -> bool:
     if not candles or len(candles) < depth:
-        logger.warning("❌ 상승 추세 판단용 캔들 부족")
+        logger.debug("❌ 상승 추세 판단용 캔들 부족")
         return False
 
     closes = [c["close"] for c in candles[-depth:]]
@@ -39,7 +40,7 @@ def is_trend_rising(candles: list, depth: int = 4) -> bool:
 
 def is_trend_falling(candles: list, depth: int = 4) -> bool:
     if not candles or len(candles) < depth:
-        logger.warning("❌ 하락 추세 판단용 캔들 부족")
+        logger.debug("❌ 하락 추세 판단용 캔들 부족")
         return False
 
     closes = [c["close"] for c in candles[-depth:]]

@@ -5,7 +5,7 @@ import argparse
 from strategy.hold_watch import start_scalping_thread
 from strategy.stage1_filter import stage1_scan
 from utils.logger import logger  # 로거 사용
-from storage.repo import fetch_open_positions
+from storage.repo import fetch_open_positions, save_snapshot
 from config.exchange import MAX_OPEN_POSITIONS
 from utils.ws_price import start_price_stream
 
@@ -55,6 +55,9 @@ def load_symbols(args) -> list:
     logger.info(f"1차 필터 통과 심볼 수: {len(symbols)}")
     return symbols
 
+
+ACTIVE_WATCHLIST_KIND = "ACTIVE_WATCHLIST"
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--symbols", help="comma-separated symbols for debug (e.g., BTC,ETH,XRP)")
@@ -68,19 +71,64 @@ if __name__ == "__main__":
         if sym not in target_symbols:
             target_symbols.append(sym)
     if not target_symbols:
-        logger.error("🚫 대상 심볼 없음 → 종료 프로그램")
+        logger.error("⚠️ 대상 심볼 없음 → 종료 프로그램")
         sys.exit(1)
 
-    logger.info(f"🚀 감시 시작할 심볼 목록: {', '.join(target_symbols)}")
+    active_symbols = set(target_symbols)
+    save_snapshot(ACTIVE_WATCHLIST_KIND, sorted(active_symbols), min_interval_sec=0, force=True)
+
+    logger.info(f"✅ 감시 시작할 심볼 목록: {', '.join(sorted(active_symbols))}")
 
     # start websocket price stream for watchlist symbols
-    start_price_stream(target_symbols)
+    ws_stream = start_price_stream(list(active_symbols))
 
-    for symbol in target_symbols:
+    started_symbols = set()
+    for symbol in sorted(active_symbols):
         start_scalping_thread(symbol)
-        logger.info(f"스케일핑 스레드 시작: {symbol}")
+        started_symbols.add(symbol)
+        logger.info(f"📌 감시 스레드 시작: {symbol}")
 
-    # 메인 스레드는 로그만 남기고 주기적으로 대기
+    last_mode = None
+    last_open_positions = set(open_positions)
+
+    # 메인 스레드는 로그만 찍고 주기적으로 대기
     while True:
         time.sleep(60)  # 1분 대기
+        try:
+            open_positions = fetch_open_positions()
+            open_set = set(open_positions)
+
+            if args.symbols or args.use_target_file:
+                mode = "MANUAL"
+                desired = set(target_symbols) | open_set
+            else:
+                if len(open_positions) >= MAX_OPEN_POSITIONS:
+                    mode = "WATCH"
+                    desired = open_set
+                else:
+                    mode = "SCAN"
+                    need_scan = (last_mode != "SCAN") or (open_set != last_open_positions)
+                    if need_scan:
+                        candidates = stage1_scan(exclude_symbols=open_set)
+                        symbols = [c["symbol"] for c in candidates]
+                        if args.max_watch and args.max_watch > 0:
+                            symbols = symbols[:args.max_watch]
+                        desired = open_set | set(symbols)
+                    else:
+                        desired = set(active_symbols) | open_set
+
+            if desired and desired != active_symbols:
+                save_snapshot(ACTIVE_WATCHLIST_KIND, sorted(desired), min_interval_sec=0, force=True)
+                ws_stream.update_symbols(list(desired))
+                for sym in sorted(desired - started_symbols):
+                    start_scalping_thread(sym)
+                    started_symbols.add(sym)
+                    logger.info(f"📌 감시 스레드 시작: {sym}")
+                active_symbols = set(desired)
+                logger.info(f"ACTIVE watchlist 갱신: {sorted(active_symbols)} (mode={mode})")
+
+            last_mode = mode
+            last_open_positions = open_set
+        except Exception as e:
+            logger.warning(f"WS watchlist 갱신 실패: {e}")
         logger.debug("메인 스레드 대기 중...")

@@ -1,5 +1,7 @@
 import logging
+from logging.handlers import RotatingFileHandler
 from datetime import datetime, date
+from pathlib import Path
 
 from utils.telegram import send_telegram_summary_if_needed, send_telegram_message
 from storage.repo import append_trade, upsert_position, fetch_trades_by_date, append_event, save_snapshot
@@ -9,6 +11,9 @@ logger = logging.getLogger("trading")
 logger.setLevel(logging.DEBUG)
 
 if not logger.handlers:
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
+
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     ch_formatter = logging.Formatter(
@@ -17,6 +22,16 @@ if not logger.handlers:
     )
     ch.setFormatter(ch_formatter)
     logger.addHandler(ch)
+
+    fh = RotatingFileHandler(
+        log_dir / "app.log",
+        maxBytes=10 * 1024 * 1024,
+        backupCount=5,
+        encoding="utf-8"
+    )
+    fh.setLevel(logging.INFO)
+    fh.setFormatter(ch_formatter)
+    logger.addHandler(fh)
 
 
 def log_trade(trade):
