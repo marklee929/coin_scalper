@@ -1,85 +1,59 @@
-import json
-import os
 import logging
 from datetime import datetime, date
-from pathlib import Path
-
-import pandas as pd
 
 from utils.telegram import send_telegram_summary_if_needed, send_telegram_message
+from storage.repo import append_trade, upsert_position, fetch_trades_by_date, append_event, save_snapshot
 
 # ——— 로깅 설정 ———
-LOG_DIR = Path("logs")
-LOG_DIR.mkdir(exist_ok=True)
-
 logger = logging.getLogger("trading")
 logger.setLevel(logging.DEBUG)
 
-# 콘솔 핸들러 (INFO 이상)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-ch_formatter = logging.Formatter(
-    "[%(asctime)s] %(levelname)-5s %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-ch.setFormatter(ch_formatter)
-logger.addHandler(ch)
-
-# 파일 핸들러 (DEBUG 이상)
-fh = logging.FileHandler(LOG_DIR / "app.log", encoding="utf-8")
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(ch_formatter)
-logger.addHandler(fh)
+if not logger.handlers:
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    ch_formatter = logging.Formatter(
+        "[%(asctime)s] %(levelname)-5s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
+    ch.setFormatter(ch_formatter)
+    logger.addHandler(ch)
 
 
 def log_trade(trade):
-    """매수·매도 거래를 JSON 파일에 저장하고 로그에 기록."""
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    log_file = LOG_DIR / f"trades_{date_str}.json"
-    if log_file.exists():
-        with open(log_file, "r", encoding="utf-8") as f:
-            logs = json.load(f)
-    else:
-        logs = []
+    """매수·매도 거래를 SQLite에 저장하고 로그에 기록."""
+    try:
+        append_trade(
+            symbol=trade.get("code") or trade.get("symbol") or "UNKNOWN",
+            side=trade.get("action") or trade.get("side") or "UNKNOWN",
+            qty=float(trade.get("qty") or trade.get("quantity") or 0),
+            price=float(trade.get("price") or 0),
+            quote_qty=trade.get("quote_qty"),
+            reason=trade.get("reason"),
+            raw=trade,
+        )
+    except Exception as e:
+        append_event(level="ERROR", type="DB_ERROR", message=f"log_trade failed: {e}")
 
-    logs.append(trade)
-    with open(log_file, "w", encoding="utf-8") as f:
-        json.dump(logs, f, ensure_ascii=False, indent=2)
-
-    logger.info(f"Trade logged: {trade['code']} {trade['action']} {trade['qty']} @ {trade['price']}")
+    logger.info(f"Trade logged: {trade}")
 
 
 def append_to_current_positions(code, price, qty):
-    """현재 포지션 파일에 보유 종목을 업데이트."""
-    path = LOG_DIR / "current_positions.json"
-    if path.exists():
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    else:
-        data = []
-
-    exists = next((x for x in data if x["code"] == code), None)
-    if exists:
-        exists["quantity"] += qty
-        logger.debug(f"Position updated: {code} += {qty} (total {exists['quantity']})")
-    else:
-        data.append({"code": code, "buy_price": price, "quantity": qty})
-        logger.debug(f"Position added: {code} {qty} @ {price}")
-
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    """현재 포지션을 SQLite에 업데이트."""
+    try:
+        upsert_position(
+            symbol=code,
+            status="OPEN",
+            qty=qty,
+            avg_price=price,
+            entry_ts=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        )
+        logger.debug(f"Position upserted: {code} {qty} @ {price}")
+    except Exception as e:
+        append_event(level="ERROR", type="DB_ERROR", message=f"append_to_current_positions failed: {e}")
 
 
 def append_sell_log(code, quantity, buy_price, sell_price, profit_rate):
-    """매도 거래를 JSON 파일에 저장하고 로그에 기록."""
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    log_file = LOG_DIR / f"trades_{date_str}.json"
-    if log_file.exists():
-        with open(log_file, "r", encoding="utf-8") as f:
-            logs = json.load(f)
-    else:
-        logs = []
-
+    """매도 거래를 SQLite에 저장하고 로그에 기록."""
     entry = {
         "code": code,
         "quantity": quantity,
@@ -88,25 +62,29 @@ def append_sell_log(code, quantity, buy_price, sell_price, profit_rate):
         "profit_rate": round(profit_rate * 100, 2),
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
-    logs.append(entry)
-    with open(log_file, "w", encoding="utf-8") as f:
-        json.dump(logs, f, ensure_ascii=False, indent=2)
+    try:
+        append_trade(
+            symbol=code,
+            side="SELL",
+            qty=quantity,
+            price=sell_price,
+            reason="EXIT",
+            raw=entry,
+            ts=entry["timestamp"],
+        )
+    except Exception as e:
+        append_event(level="ERROR", type="DB_ERROR", message=f"append_sell_log failed: {e}")
 
     logger.info(f"Sell logged: {code} {quantity} @ {sell_price} ({round(profit_rate*100,2)}%)")
 
 
 def summarize_day_trades(trades=None):
-    """오늘 매매 내역을 요약해 파일에 저장하고 텔레그램으로 전송."""
+    """오늘 매매 내역을 요약해 텔레그램으로 전송."""
     today = datetime.now().strftime("%Y-%m-%d")
-    trade_log_path = LOG_DIR / f"trades_{today}.json"
-    summary_path = LOG_DIR / f"summary_{today}.json"
-
-    if not trade_log_path.exists():
+    trades = trades or fetch_trades_by_date(today)
+    if not trades:
         logger.warning(f"No trades to summarize for {today}")
         return
-
-    with open(trade_log_path, encoding="utf-8") as f:
-        trades = json.load(f)
 
     total_profit_value = 0
     total_invested = 0
@@ -141,50 +119,19 @@ def summarize_day_trades(trades=None):
         "min_profit_code": min_code,
         "total_profit_sum": round(total_profit_value / 100, 0)
     }
-
-    with open(summary_path, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
-
-    logger.info(f"Day summary saved → {summary_path}")
+    save_snapshot(kind="SUMMARY", data=summary, force=True)
+    logger.info("Day summary saved to SQLite")
     send_telegram_summary_if_needed(summary)
 
 
 def save_daily_summary():
     today = datetime.now().strftime("%Y-%m-%d")
-    log_path = Path(f"logs/trades_{today}.json")
-    output_path = Path(f"data/summary_{today}.xlsx")
-    Path("data").mkdir(exist_ok=True)
-
-    if not log_path.exists():
-        logger.error("저장 실패: 거래 로그 파일이 없습니다.")
+    logs = fetch_trades_by_date(today)
+    if not logs:
+        logger.error("저장 실패: 거래 로그가 없습니다.")
         return
-
-    with open(log_path, encoding="utf-8") as f:
-        logs = json.load(f)
-
-    df = pd.DataFrame(logs)
-    try:
-        df.to_excel(output_path, index=False)
-        logger.info(f"✅ 엑셀 저장 완료: {output_path}")
-    except Exception as e:
-        logger.error(f"엑셀 저장 실패: {e}")
-
-    # 🔐 텔레그램으로 거래 기록 전송
-    text_blocks = []
-    current_block = ""
-    for entry in logs:
-        line = json.dumps(entry, ensure_ascii=False)
-        if len(current_block) + len(line) + 1 > 4000:
-            text_blocks.append(current_block)
-            current_block = ""
-        current_block += line + "\n"
-    if current_block:
-        text_blocks.append(current_block)
 
     send_telegram_message(
         f"📦 자동매매 종료\n📝 {date.today()} 거래 요약 ({len(logs)}건)"
     )
-
-    for idx, block in enumerate(text_blocks, start=1):
-        send_telegram_message(f"[{idx}/{len(text_blocks)}]\n{block.strip()}")
 

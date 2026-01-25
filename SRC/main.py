@@ -5,6 +5,8 @@ import argparse
 from strategy.hold_watch import start_scalping_thread
 from strategy.stage1_filter import stage1_scan
 from utils.logger import logger  # 로거 사용
+from storage.repo import fetch_open_positions
+from utils.ws_price import start_price_stream
 
 
 def load_target_symbols(path: str = "config/target_currency.json") -> list:
@@ -39,7 +41,8 @@ def load_symbols(args) -> list:
         return symbols
 
     # 3) 기본: 전체 유니버스 스캔 → 1차 필터 통과 리스트
-    candidates = stage1_scan()
+    open_positions = fetch_open_positions()
+    candidates = stage1_scan(exclude_symbols=set(open_positions))
     symbols = [c["symbol"] for c in candidates]
     if args.max_watch and args.max_watch > 0:
         symbols = symbols[:args.max_watch]
@@ -54,11 +57,18 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     target_symbols = load_symbols(args)
+    open_positions = fetch_open_positions()
+    for sym in open_positions:
+        if sym not in target_symbols:
+            target_symbols.append(sym)
     if not target_symbols:
         logger.error("🚫 대상 심볼 없음 → 종료 프로그램")
         sys.exit(1)
 
     logger.info(f"🚀 감시 시작할 심볼 목록: {', '.join(target_symbols)}")
+
+    # start websocket price stream for watchlist symbols
+    start_price_stream(target_symbols)
 
     for symbol in target_symbols:
         start_scalping_thread(symbol)

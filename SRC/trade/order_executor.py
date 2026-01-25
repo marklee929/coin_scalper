@@ -7,6 +7,7 @@ from data.fetch_balance import fetch_active_balances
 from utils.symbols import format_symbol
 from utils.telegram import send_telegram_message
 from utils.logger import logger
+from storage.repo import append_trade, append_event
 
 
 def place_limit_order(symbol: str, price: float, qty: float, side: str = "BUY", retry: int = 0):
@@ -36,10 +37,21 @@ def place_limit_order(symbol: str, price: float, qty: float, side: str = "BUY", 
         send_telegram_message(
             f"📈 {'매수' if side=='BUY' else '매도'} 완료 (지정가): {symbol} {qty}개 @ {price} {QUOTE_ASSET}"
         )
+        append_trade(
+            symbol=symbol.upper(),
+            side=side.upper(),
+            qty=float(qty),
+            price=float(price),
+            quote_qty=float(price) * float(qty),
+            order_id=str(data.get("orderId")) if isinstance(data, dict) else None,
+            reason="LIMIT",
+            raw=data,
+        )
         return data
 
     err = response.json() if response.content else {"msg": response.text}
     logger.error(f"⚠️ LIMIT 주문 실패: {err}")
+    append_event(level="ERROR", type="ORDER_ERROR", symbol=symbol.upper(), message=str(err))
     return None
 
 
@@ -89,12 +101,35 @@ def place_market_order(symbol: str,
     if response.status_code in (200, 201):
         data = response.json()
         executed = data.get("executedQty") or data.get("origQty")
+        quote_qty = data.get("cummulativeQuoteQty") or data.get("quoteOrderQty")
+        fee = None
+        fee_asset = None
+        fills = data.get("fills", []) if isinstance(data, dict) else []
+        if fills:
+            try:
+                fee = sum(float(f.get("commission", 0)) for f in fills)
+                fee_asset = fills[0].get("commissionAsset")
+            except Exception:
+                fee = None
         logger.info(f"✅ MARKET {side} 주문 성공: {symbol} x{executed} @ 시장가")
         send_telegram_message(f"📈 {'매수' if side=='BUY' else '매도'} 완료 (시장가): {symbol} {executed}개 @ 시장가")
+        append_trade(
+            symbol=symbol.upper(),
+            side=side.upper(),
+            qty=float(executed) if executed else 0.0,
+            price=None,
+            quote_qty=float(quote_qty) if quote_qty else None,
+            fee=fee,
+            fee_asset=fee_asset,
+            order_id=str(data.get("orderId")) if isinstance(data, dict) else None,
+            reason="MARKET",
+            raw=data,
+        )
         return data
 
     err = response.json() if response.content else {"msg": response.text}
     logger.error(f"⚠️ MARKET 주문 실패: {err}")
+    append_event(level="ERROR", type="ORDER_ERROR", symbol=symbol.upper(), message=str(err))
     return None
 
 

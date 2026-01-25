@@ -4,15 +4,13 @@ import os
 from datetime import datetime, timedelta
 from utils.safe_request import safe_request
 from config.exchange import QUOTE_ASSET
+from storage.repo import get_latest_snapshot, save_snapshot
 
 with open(os.path.join(os.path.dirname(__file__), '..', 'config', 'secrets.json'), encoding="utf-8") as f:
     secrets = json.load(f)
 
 BOT_TOKEN = secrets.get("TELEGRAM_TOKEN")
 CHAT_ID   = secrets.get("TELEGRAM_CHAT_ID")
-
-LAST_SUMMARY_FILE = os.path.join(os.path.dirname(__file__), '..', 'logs', 'last_summary_timestamp.txt')
-
 
 def send_telegram_message(msg: str):
     """
@@ -44,14 +42,14 @@ def send_telegram_summary_if_needed(summary: dict):
 
     now = datetime.now()
 
-    # 마지막 전송 시간 읽기
+    # 마지막 전송 시간 읽기 (SQLite snapshot)
     last_ts = None
     try:
-        with open(LAST_SUMMARY_FILE, 'r') as f:
-            last_str = f.read().strip()
-            last_ts = datetime.fromisoformat(last_str)
+        latest = get_latest_snapshot("SUMMARY_SENT")
+        if latest and latest.get("data", {}).get("ts"):
+            last_ts = datetime.fromisoformat(latest["data"]["ts"])
     except Exception:
-        pass
+        last_ts = None
 
     # 마지막 전송으로부터 1시간 이내면 건너뜀
     if last_ts and (now - last_ts) < timedelta(hours=1):
@@ -62,9 +60,7 @@ def send_telegram_summary_if_needed(summary: dict):
     send_telegram_message(message)
     logger.info("📬 텔레그램 요약 전송 완료")
 
-    os.makedirs(os.path.dirname(LAST_SUMMARY_FILE), exist_ok=True)
-    with open(LAST_SUMMARY_FILE, 'w') as f:
-        f.write(now.isoformat())
+    save_snapshot(kind="SUMMARY_SENT", data={"ts": now.isoformat()}, force=True)
 
 
 def format_summary_for_telegram(summary: dict) -> str:

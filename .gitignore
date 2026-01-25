@@ -35,6 +35,14 @@ universe_*.json
 watchlist_*.json
 positions_*.json
 
+# allow storage code under SRC
+!SRC/storage/
+!SRC/storage/**
+SRC/storage/*.db
+SRC/storage/*.sqlite
+SRC/storage/archive/
+SRC/storage/archive/**
+
 # =====================
 # python
 # =====================

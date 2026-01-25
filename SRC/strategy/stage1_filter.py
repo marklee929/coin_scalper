@@ -92,7 +92,8 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
                 change_high: float = -5.0,
                 min_quote_volume: float = 10000.0,
                 min_trade_count: int = 10,
-                max_new_listing_days: int = 2) -> List[Dict]:
+                max_new_listing_days: int = 2,
+                exclude_symbols: Optional[set] = None) -> List[Dict]:
     """
     코인 1차 필터 스캔.
     - 24h Change %: -5% ~ -20% 범위
@@ -106,9 +107,12 @@ def stage1_scan(quote_asset: str = QUOTE_ASSET,
     ticker_map = {t.get("symbol"): t for t in tickers if isinstance(t, dict)}
 
     results = []
+    exclude = {s.upper() for s in (exclude_symbols or set())}
     for info in sorted(symbols, key=lambda x: x["symbol"]):
         symbol_pair = info["symbol"]
         base_symbol = info["baseAsset"]
+        if symbol_pair.upper() in exclude or base_symbol.upper() in exclude:
+            continue
         ticker = ticker_map.get(symbol_pair)
         if not ticker:
             continue

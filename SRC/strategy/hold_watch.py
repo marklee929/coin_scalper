@@ -9,8 +9,11 @@ from utils.telegram import send_telegram_message
 from utils.candle_log import get_hourly_candles, get_1m_candles
 from utils.number import safe_int
 from utils.logger import logger
+from storage.repo import append_event, upsert_position, save_snapshot
+from utils.ws_price import get_price as get_ws_price
 
 COOLDOWN_AFTER_TRADE = 60
+BALANCE_REFRESH_SEC = 120
 trading_state = {
     "holding": False,
     "buy_price": 0.0,
@@ -53,6 +56,9 @@ def scalping_loop(symbol: str):
 
     # 초기화
     balances, krw = fetch_active_balances()
+    balances_cache = balances
+    krw_cache = krw
+    last_balance_ts = time.time()
     trading_state.update({
         "holding": False,
         "qty": 0.0,
@@ -80,19 +86,39 @@ def scalping_loop(symbol: str):
                 time.sleep(10)
                 continue
 
-            price_data = get_current_price(QUOTE_ASSET, symbol)
-            price = price_data.get("price", 0)
+            ws_price = get_ws_price(symbol)
+            if ws_price is not None:
+                price = ws_price
+            else:
+                price_data = get_current_price(QUOTE_ASSET, symbol)
+                price = price_data.get("price", 0)
             if price == 0:
                 time.sleep(5)
                 continue
 
-            balances, krw = fetch_active_balances()
-            sym = next((x for x in balances if x["symbol"] == symbol), None)
+            if now - last_balance_ts >= BALANCE_REFRESH_SEC:
+                balances_cache, krw_cache = fetch_active_balances()
+                last_balance_ts = now
+
+            sym = next((x for x in balances_cache if x["symbol"] == symbol), None)
             qty = sym["available"] if sym else 0.0
             holding = qty > 0
             trading_state.update({"holding": holding, "qty": qty})
             if holding and trading_state["buy_price"] == 0.0:
                 trading_state.update({"buy_price": price, "high_price": price})
+
+            save_snapshot(
+                kind=f"STATE:{symbol}",
+                data={
+                    "symbol": symbol,
+                    "holding": trading_state["holding"],
+                    "qty": trading_state["qty"],
+                    "buy_price": trading_state["buy_price"],
+                    "high_price": trading_state["high_price"],
+                    "price": price,
+                },
+                min_interval_sec=60,
+            )
 
             # 🔍 캔들 데이터
             c1h = get_hourly_candles(symbol, 12)  # 최근 12시간
@@ -108,7 +134,7 @@ def scalping_loop(symbol: str):
             bottom = min(low_candidates)
             peak = max(high_candidates)
 
-            send_trend_report(symbol, price, krw, qty, minute_30_trend, minute_10_trend, relative_pos)
+            send_trend_report(symbol, price, krw_cache, qty, minute_30_trend, minute_10_trend, relative_pos)
 
             if holding:
                 buy_price = trading_state["buy_price"]
@@ -119,29 +145,51 @@ def scalping_loop(symbol: str):
 
                 # ✅ 익절
                 if profit_ratio > 1.05 and price < peak_price * 0.98 and (minute_30_trend == "down" or (minute_30_trend == "side" and minute_10_trend == "down")):
-                    sell_market(symbol, qty)
+                    res = sell_market(symbol, qty)
                     logger.info(f"✅ 익절: 수익 + 고점 하락 + 추세 하락")
                     trading_state.update({
                         "holding": False,
                         "high_price": 0.0,
                         "low_price": None
                     })
+                    if res:
+                        upsert_position(
+                            symbol=symbol,
+                            status="CLOSED",
+                            qty=0.0,
+                            avg_price=trading_state.get("buy_price"),
+                            exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            pnl_pct=(profit_ratio - 1.0) * 100.0,
+                        )
+                        append_event(level="INFO", type="EXIT_TP", symbol=symbol, message="take profit")
                     dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
                     last_sell_time = now
+                    last_balance_ts = 0
                     continue
 
                 # 🛑 손절
                 # 수정 코드
                 if profit_ratio < 0.97 and (minute_30_trend == "down" or (minute_30_trend == "side" and minute_10_trend == "down")):
-                    sell_market(symbol, qty)
+                    res = sell_market(symbol, qty)
                     logger.info(f"🛑 손절: 손실 + 추세 하락")
                     trading_state.update({
                         "holding": False,
                         "high_price": 0.0,
                         "low_price": None
                     })
+                    if res:
+                        upsert_position(
+                            symbol=symbol,
+                            status="CLOSED",
+                            qty=0.0,
+                            avg_price=trading_state.get("buy_price"),
+                            exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            pnl_pct=(profit_ratio - 1.0) * 100.0,
+                        )
+                        append_event(level="INFO", type="EXIT_SL", symbol=symbol, message="stop loss")
                     dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
                     last_sell_time = now
+                    last_balance_ts = 0
                     continue
 
             else:
@@ -152,13 +200,13 @@ def scalping_loop(symbol: str):
                 #logger.info(f"보유자금 { krw }, { krw >= MIN_ORDER_KRW }")
                 #logger.info(f"최근 매도 { now - last_sell_time > 600 }")
                 # 📈 재매수 조건
-                open_positions = len(balances)
+                open_positions = len(balances_cache)
                 if open_positions >= MAX_OPEN_POSITIONS:
                     logger.info(f"🚫 신규 진입 제한: open_positions={open_positions}, max={MAX_OPEN_POSITIONS}")
                     time.sleep(5)
                     continue
 
-                order_amount = calc_order_quote(krw, ALLOC_PCT, MAX_OPEN_POSITIONS, RESERVE_QUOTE)
+                order_amount = calc_order_quote(krw_cache, ALLOC_PCT, MAX_OPEN_POSITIONS, RESERVE_QUOTE)
                 if order_amount < MIN_ORDER_QUOTE:
                     logger.info(
                         f"🚫 주문 금액 부족: order={order_amount:.2f} {QUOTE_ASSET}, "
@@ -171,7 +219,7 @@ def scalping_loop(symbol: str):
                     price > bottom * 1.005 and (minute_30_trend == "up" or (minute_30_trend == "side" and minute_10_trend == "up"))
                     and now - last_sell_time > 600
                 ):
-                    buy_market(symbol, order_amount)
+                    res = buy_market(symbol, order_amount)
                     logger.info(f"📥 재매수: 1시간봉 저점 대비 +2% 상승 & 실시간 추세 상승")
                     trading_state.update({
                         "holding": True,
@@ -179,7 +227,17 @@ def scalping_loop(symbol: str):
                         "high_price": price,
                         "low_price": None
                     })
+                    if res:
+                        upsert_position(
+                            symbol=symbol,
+                            status="OPEN",
+                            qty=order_amount / price if price else 0.0,
+                            avg_price=price,
+                            entry_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        )
+                        append_event(level="INFO", type="ENTRY", symbol=symbol, message="buy signal")
                     dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
+                    last_balance_ts = 0
                     continue
 
             time.sleep(5)

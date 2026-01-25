@@ -1,0 +1,3123 @@
+{
+  "date": "2026-01-25",
+  "source": "binance_exchange_info",
+  "quoteAsset": "USDT",
+  "symbols": [
+    {
+      "symbol": "BTCUSDT",
+      "baseAsset": "BTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ETHUSDT",
+      "baseAsset": "ETH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BNBUSDT",
+      "baseAsset": "BNB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NEOUSDT",
+      "baseAsset": "NEO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LTCUSDT",
+      "baseAsset": "LTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "QTUMUSDT",
+      "baseAsset": "QTUM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ADAUSDT",
+      "baseAsset": "ADA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XRPUSDT",
+      "baseAsset": "XRP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TUSDUSDT",
+      "baseAsset": "TUSD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IOTAUSDT",
+      "baseAsset": "IOTA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XLMUSDT",
+      "baseAsset": "XLM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ONTUSDT",
+      "baseAsset": "ONT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TRXUSDT",
+      "baseAsset": "TRX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ETCUSDT",
+      "baseAsset": "ETC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ICXUSDT",
+      "baseAsset": "ICX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VETUSDT",
+      "baseAsset": "VET",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USDCUSDT",
+      "baseAsset": "USDC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LINKUSDT",
+      "baseAsset": "LINK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ONGUSDT",
+      "baseAsset": "ONG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HOTUSDT",
+      "baseAsset": "HOT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZILUSDT",
+      "baseAsset": "ZIL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZRXUSDT",
+      "baseAsset": "ZRX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FETUSDT",
+      "baseAsset": "FET",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BATUSDT",
+      "baseAsset": "BAT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZECUSDT",
+      "baseAsset": "ZEC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IOSTUSDT",
+      "baseAsset": "IOST",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CELRUSDT",
+      "baseAsset": "CELR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DASHUSDT",
+      "baseAsset": "DASH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "THETAUSDT",
+      "baseAsset": "THETA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ENJUSDT",
+      "baseAsset": "ENJ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ATOMUSDT",
+      "baseAsset": "ATOM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TFUELUSDT",
+      "baseAsset": "TFUEL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ONEUSDT",
+      "baseAsset": "ONE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALGOUSDT",
+      "baseAsset": "ALGO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DOGEUSDT",
+      "baseAsset": "DOGE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DUSKUSDT",
+      "baseAsset": "DUSK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ANKRUSDT",
+      "baseAsset": "ANKR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WINUSDT",
+      "baseAsset": "WIN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "COSUSDT",
+      "baseAsset": "COS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MTLUSDT",
+      "baseAsset": "MTL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DENTUSDT",
+      "baseAsset": "DENT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WANUSDT",
+      "baseAsset": "WAN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FUNUSDT",
+      "baseAsset": "FUN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CVCUSDT",
+      "baseAsset": "CVC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CHZUSDT",
+      "baseAsset": "CHZ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BANDUSDT",
+      "baseAsset": "BAND",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XTZUSDT",
+      "baseAsset": "XTZ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RVNUSDT",
+      "baseAsset": "RVN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HBARUSDT",
+      "baseAsset": "HBAR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NKNUSDT",
+      "baseAsset": "NKN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STXUSDT",
+      "baseAsset": "STX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KAVAUSDT",
+      "baseAsset": "KAVA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARPAUSDT",
+      "baseAsset": "ARPA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IOTXUSDT",
+      "baseAsset": "IOTX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RLCUSDT",
+      "baseAsset": "RLC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BCHUSDT",
+      "baseAsset": "BCH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FTTUSDT",
+      "baseAsset": "FTT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EURUSDT",
+      "baseAsset": "EUR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OGNUSDT",
+      "baseAsset": "OGN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LSKUSDT",
+      "baseAsset": "LSK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BNTUSDT",
+      "baseAsset": "BNT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MBLUSDT",
+      "baseAsset": "MBL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "COTIUSDT",
+      "baseAsset": "COTI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DATAUSDT",
+      "baseAsset": "DATA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SOLUSDT",
+      "baseAsset": "SOL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CTSIUSDT",
+      "baseAsset": "CTSI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HIVEUSDT",
+      "baseAsset": "HIVE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CHRUSDT",
+      "baseAsset": "CHR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARDRUSDT",
+      "baseAsset": "ARDR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MDTUSDT",
+      "baseAsset": "MDT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KNCUSDT",
+      "baseAsset": "KNC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LRCUSDT",
+      "baseAsset": "LRC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "COMPUSDT",
+      "baseAsset": "COMP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SCUSDT",
+      "baseAsset": "SC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZENUSDT",
+      "baseAsset": "ZEN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SNXUSDT",
+      "baseAsset": "SNX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VTHOUSDT",
+      "baseAsset": "VTHO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DGBUSDT",
+      "baseAsset": "DGB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SXPUSDT",
+      "baseAsset": "SXP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DCRUSDT",
+      "baseAsset": "DCR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STORJUSDT",
+      "baseAsset": "STORJ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MANAUSDT",
+      "baseAsset": "MANA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "YFIUSDT",
+      "baseAsset": "YFI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JSTUSDT",
+      "baseAsset": "JST",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CRVUSDT",
+      "baseAsset": "CRV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SANDUSDT",
+      "baseAsset": "SAND",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NMRUSDT",
+      "baseAsset": "NMR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DOTUSDT",
+      "baseAsset": "DOT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LUNAUSDT",
+      "baseAsset": "LUNA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RSRUSDT",
+      "baseAsset": "RSR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PAXGUSDT",
+      "baseAsset": "PAXG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TRBUSDT",
+      "baseAsset": "TRB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SUSHIUSDT",
+      "baseAsset": "SUSHI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KSMUSDT",
+      "baseAsset": "KSM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EGLDUSDT",
+      "baseAsset": "EGLD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DIAUSDT",
+      "baseAsset": "DIA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RUNEUSDT",
+      "baseAsset": "RUNE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FIOUSDT",
+      "baseAsset": "FIO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "UMAUSDT",
+      "baseAsset": "UMA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BELUSDT",
+      "baseAsset": "BEL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "UNIUSDT",
+      "baseAsset": "UNI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OXTUSDT",
+      "baseAsset": "OXT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SUNUSDT",
+      "baseAsset": "SUN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AVAXUSDT",
+      "baseAsset": "AVAX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "UTKUSDT",
+      "baseAsset": "UTK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XVSUSDT",
+      "baseAsset": "XVS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AAVEUSDT",
+      "baseAsset": "AAVE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NEARUSDT",
+      "baseAsset": "NEAR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FILUSDT",
+      "baseAsset": "FIL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "INJUSDT",
+      "baseAsset": "INJ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AUDIOUSDT",
+      "baseAsset": "AUDIO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CTKUSDT",
+      "baseAsset": "CTK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AXSUSDT",
+      "baseAsset": "AXS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STRAXUSDT",
+      "baseAsset": "STRAX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ROSEUSDT",
+      "baseAsset": "ROSE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AVAUSDT",
+      "baseAsset": "AVA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SKLUSDT",
+      "baseAsset": "SKL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GRTUSDT",
+      "baseAsset": "GRT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JUVUSDT",
+      "baseAsset": "JUV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PSGUSDT",
+      "baseAsset": "PSG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "1INCHUSDT",
+      "baseAsset": "1INCH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OGUSDT",
+      "baseAsset": "OG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ATMUSDT",
+      "baseAsset": "ATM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ASRUSDT",
+      "baseAsset": "ASR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CELOUSDT",
+      "baseAsset": "CELO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RIFUSDT",
+      "baseAsset": "RIF",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TRUUSDT",
+      "baseAsset": "TRU",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CKBUSDT",
+      "baseAsset": "CKB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TWTUSDT",
+      "baseAsset": "TWT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SFPUSDT",
+      "baseAsset": "SFP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DODOUSDT",
+      "baseAsset": "DODO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CAKEUSDT",
+      "baseAsset": "CAKE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACMUSDT",
+      "baseAsset": "ACM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OMUSDT",
+      "baseAsset": "OM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PONDUSDT",
+      "baseAsset": "POND",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DEGOUSDT",
+      "baseAsset": "DEGO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALICEUSDT",
+      "baseAsset": "ALICE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SUPERUSDT",
+      "baseAsset": "SUPER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CFXUSDT",
+      "baseAsset": "CFX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TKOUSDT",
+      "baseAsset": "TKO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PUNDIXUSDT",
+      "baseAsset": "PUNDIX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TLMUSDT",
+      "baseAsset": "TLM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BARUSDT",
+      "baseAsset": "BAR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FORTHUSDT",
+      "baseAsset": "FORTH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SLPUSDT",
+      "baseAsset": "SLP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SHIBUSDT",
+      "baseAsset": "SHIB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ICPUSDT",
+      "baseAsset": "ICP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARUSDT",
+      "baseAsset": "AR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MASKUSDT",
+      "baseAsset": "MASK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LPTUSDT",
+      "baseAsset": "LPT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XVGUSDT",
+      "baseAsset": "XVG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ATAUSDT",
+      "baseAsset": "ATA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GTCUSDT",
+      "baseAsset": "GTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PHAUSDT",
+      "baseAsset": "PHA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MLNUSDT",
+      "baseAsset": "MLN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DEXEUSDT",
+      "baseAsset": "DEXE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "C98USDT",
+      "baseAsset": "C98",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "QNTUSDT",
+      "baseAsset": "QNT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FLOWUSDT",
+      "baseAsset": "FLOW",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MINAUSDT",
+      "baseAsset": "MINA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RAYUSDT",
+      "baseAsset": "RAY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FARMUSDT",
+      "baseAsset": "FARM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "QUICKUSDT",
+      "baseAsset": "QUICK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MBOXUSDT",
+      "baseAsset": "MBOX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "REQUSDT",
+      "baseAsset": "REQ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GHSTUSDT",
+      "baseAsset": "GHST",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WAXPUSDT",
+      "baseAsset": "WAXP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GNOUSDT",
+      "baseAsset": "GNO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XECUSDT",
+      "baseAsset": "XEC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DYDXUSDT",
+      "baseAsset": "DYDX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IDEXUSDT",
+      "baseAsset": "IDEX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USDPUSDT",
+      "baseAsset": "USDP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GALAUSDT",
+      "baseAsset": "GALA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ILVUSDT",
+      "baseAsset": "ILV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "YGGUSDT",
+      "baseAsset": "YGG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SYSUSDT",
+      "baseAsset": "SYS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DFUSDT",
+      "baseAsset": "DF",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FIDAUSDT",
+      "baseAsset": "FIDA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AGLDUSDT",
+      "baseAsset": "AGLD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RADUSDT",
+      "baseAsset": "RAD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RAREUSDT",
+      "baseAsset": "RARE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LAZIOUSDT",
+      "baseAsset": "LAZIO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CHESSUSDT",
+      "baseAsset": "CHESS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ADXUSDT",
+      "baseAsset": "ADX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AUCTIONUSDT",
+      "baseAsset": "AUCTION",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MOVRUSDT",
+      "baseAsset": "MOVR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CITYUSDT",
+      "baseAsset": "CITY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ENSUSDT",
+      "baseAsset": "ENS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "QIUSDT",
+      "baseAsset": "QI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PORTOUSDT",
+      "baseAsset": "PORTO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "POWRUSDT",
+      "baseAsset": "POWR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JASMYUSDT",
+      "baseAsset": "JASMY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AMPUSDT",
+      "baseAsset": "AMP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PYRUSDT",
+      "baseAsset": "PYR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALCXUSDT",
+      "baseAsset": "ALCX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SANTOSUSDT",
+      "baseAsset": "SANTOS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BICOUSDT",
+      "baseAsset": "BICO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FLUXUSDT",
+      "baseAsset": "FLUX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HIGHUSDT",
+      "baseAsset": "HIGH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CVXUSDT",
+      "baseAsset": "CVX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PEOPLEUSDT",
+      "baseAsset": "PEOPLE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SPELLUSDT",
+      "baseAsset": "SPELL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JOEUSDT",
+      "baseAsset": "JOE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACHUSDT",
+      "baseAsset": "ACH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IMXUSDT",
+      "baseAsset": "IMX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GLMRUSDT",
+      "baseAsset": "GLMR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SCRTUSDT",
+      "baseAsset": "SCRT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "API3USDT",
+      "baseAsset": "API3",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BTTCUSDT",
+      "baseAsset": "BTTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACAUSDT",
+      "baseAsset": "ACA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XNOUSDT",
+      "baseAsset": "XNO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WOOUSDT",
+      "baseAsset": "WOO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALPINEUSDT",
+      "baseAsset": "ALPINE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TUSDT",
+      "baseAsset": "T",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ASTRUSDT",
+      "baseAsset": "ASTR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GMTUSDT",
+      "baseAsset": "GMT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "APEUSDT",
+      "baseAsset": "APE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BIFIUSDT",
+      "baseAsset": "BIFI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STEEMUSDT",
+      "baseAsset": "STEEM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NEXOUSDT",
+      "baseAsset": "NEXO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LDOUSDT",
+      "baseAsset": "LDO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OPUSDT",
+      "baseAsset": "OP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STGUSDT",
+      "baseAsset": "STG",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LUNCUSDT",
+      "baseAsset": "LUNC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GMXUSDT",
+      "baseAsset": "GMX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "POLYXUSDT",
+      "baseAsset": "POLYX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "APTUSDT",
+      "baseAsset": "APT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OSMOUSDT",
+      "baseAsset": "OSMO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HFTUSDT",
+      "baseAsset": "HFT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PHBUSDT",
+      "baseAsset": "PHB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HOOKUSDT",
+      "baseAsset": "HOOK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MAGICUSDT",
+      "baseAsset": "MAGIC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RPLUSDT",
+      "baseAsset": "RPL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GNSUSDT",
+      "baseAsset": "GNS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SYNUSDT",
+      "baseAsset": "SYN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SSVUSDT",
+      "baseAsset": "SSV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LQTYUSDT",
+      "baseAsset": "LQTY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USTCUSDT",
+      "baseAsset": "USTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GASUSDT",
+      "baseAsset": "GAS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GLMUSDT",
+      "baseAsset": "GLM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PROMUSDT",
+      "baseAsset": "PROM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "QKCUSDT",
+      "baseAsset": "QKC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IDUSDT",
+      "baseAsset": "ID",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARBUSDT",
+      "baseAsset": "ARB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RDNTUSDT",
+      "baseAsset": "RDNT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WBTCUSDT",
+      "baseAsset": "WBTC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EDUUSDT",
+      "baseAsset": "EDU",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SUIUSDT",
+      "baseAsset": "SUI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PEPEUSDT",
+      "baseAsset": "PEPE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FLOKIUSDT",
+      "baseAsset": "FLOKI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MAVUSDT",
+      "baseAsset": "MAV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PENDLEUSDT",
+      "baseAsset": "PENDLE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARKMUSDT",
+      "baseAsset": "ARKM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WBETHUSDT",
+      "baseAsset": "WBETH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WLDUSDT",
+      "baseAsset": "WLD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FDUSDUSDT",
+      "baseAsset": "FDUSD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SEIUSDT",
+      "baseAsset": "SEI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CYBERUSDT",
+      "baseAsset": "CYBER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ARKUSDT",
+      "baseAsset": "ARK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IQUSDT",
+      "baseAsset": "IQ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NTRNUSDT",
+      "baseAsset": "NTRN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TIAUSDT",
+      "baseAsset": "TIA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MEMEUSDT",
+      "baseAsset": "MEME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ORDIUSDT",
+      "baseAsset": "ORDI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BEAMXUSDT",
+      "baseAsset": "BEAMX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PIVXUSDT",
+      "baseAsset": "PIVX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VICUSDT",
+      "baseAsset": "VIC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BLURUSDT",
+      "baseAsset": "BLUR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VANRYUSDT",
+      "baseAsset": "VANRY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AEURUSDT",
+      "baseAsset": "AEUR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JTOUSDT",
+      "baseAsset": "JTO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "1000SATSUSDT",
+      "baseAsset": "1000SATS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BONKUSDT",
+      "baseAsset": "BONK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACEUSDT",
+      "baseAsset": "ACE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NFPUSDT",
+      "baseAsset": "NFP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AIUSDT",
+      "baseAsset": "AI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XAIUSDT",
+      "baseAsset": "XAI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MANTAUSDT",
+      "baseAsset": "MANTA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALTUSDT",
+      "baseAsset": "ALT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "JUPUSDT",
+      "baseAsset": "JUP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PYTHUSDT",
+      "baseAsset": "PYTH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RONINUSDT",
+      "baseAsset": "RONIN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DYMUSDT",
+      "baseAsset": "DYM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PIXELUSDT",
+      "baseAsset": "PIXEL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STRKUSDT",
+      "baseAsset": "STRK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PORTALUSDT",
+      "baseAsset": "PORTAL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AXLUSDT",
+      "baseAsset": "AXL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WIFUSDT",
+      "baseAsset": "WIF",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "METISUSDT",
+      "baseAsset": "METIS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AEVOUSDT",
+      "baseAsset": "AEVO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BOMEUSDT",
+      "baseAsset": "BOME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ETHFIUSDT",
+      "baseAsset": "ETHFI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ENAUSDT",
+      "baseAsset": "ENA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WUSDT",
+      "baseAsset": "W",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TNSRUSDT",
+      "baseAsset": "TNSR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SAGAUSDT",
+      "baseAsset": "SAGA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TAOUSDT",
+      "baseAsset": "TAO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "REZUSDT",
+      "baseAsset": "REZ",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BBUSDT",
+      "baseAsset": "BB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NOTUSDT",
+      "baseAsset": "NOT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "IOUSDT",
+      "baseAsset": "IO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZKUSDT",
+      "baseAsset": "ZK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LISTAUSDT",
+      "baseAsset": "LISTA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZROUSDT",
+      "baseAsset": "ZRO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GUSDT",
+      "baseAsset": "G",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BANANAUSDT",
+      "baseAsset": "BANANA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RENDERUSDT",
+      "baseAsset": "RENDER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TONUSDT",
+      "baseAsset": "TON",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DOGSUSDT",
+      "baseAsset": "DOGS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EURIUSDT",
+      "baseAsset": "EURI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "POLUSDT",
+      "baseAsset": "POL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NEIROUSDT",
+      "baseAsset": "NEIRO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TURBOUSDT",
+      "baseAsset": "TURBO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "1MBABYDOGEUSDT",
+      "baseAsset": "1MBABYDOGE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CATIUSDT",
+      "baseAsset": "CATI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HMSTRUSDT",
+      "baseAsset": "HMSTR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EIGENUSDT",
+      "baseAsset": "EIGEN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SCRUSDT",
+      "baseAsset": "SCR",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BNSOLUSDT",
+      "baseAsset": "BNSOL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LUMIAUSDT",
+      "baseAsset": "LUMIA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KAIAUSDT",
+      "baseAsset": "KAIA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "COWUSDT",
+      "baseAsset": "COW",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CETUSUSDT",
+      "baseAsset": "CETUS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PNUTUSDT",
+      "baseAsset": "PNUT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACTUSDT",
+      "baseAsset": "ACT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USUALUSDT",
+      "baseAsset": "USUAL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "THEUSDT",
+      "baseAsset": "THE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ACXUSDT",
+      "baseAsset": "ACX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ORCAUSDT",
+      "baseAsset": "ORCA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MOVEUSDT",
+      "baseAsset": "MOVE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MEUSDT",
+      "baseAsset": "ME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VELODROMEUSDT",
+      "baseAsset": "VELODROME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VANAUSDT",
+      "baseAsset": "VANA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "1000CATUSDT",
+      "baseAsset": "1000CAT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PENGUUSDT",
+      "baseAsset": "PENGU",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BIOUSDT",
+      "baseAsset": "BIO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DUSDT",
+      "baseAsset": "D",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AIXBTUSDT",
+      "baseAsset": "AIXBT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CGPTUSDT",
+      "baseAsset": "CGPT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "COOKIEUSDT",
+      "baseAsset": "COOKIE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SUSDT",
+      "baseAsset": "S",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SOLVUSDT",
+      "baseAsset": "SOLV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TRUMPUSDT",
+      "baseAsset": "TRUMP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ANIMEUSDT",
+      "baseAsset": "ANIME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BERAUSDT",
+      "baseAsset": "BERA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "1000CHEEMSUSDT",
+      "baseAsset": "1000CHEEMS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TSTUSDT",
+      "baseAsset": "TST",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LAYERUSDT",
+      "baseAsset": "LAYER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HEIUSDT",
+      "baseAsset": "HEI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KAITOUSDT",
+      "baseAsset": "KAITO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SHELLUSDT",
+      "baseAsset": "SHELL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "REDUSDT",
+      "baseAsset": "RED",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GPSUSDT",
+      "baseAsset": "GPS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EPICUSDT",
+      "baseAsset": "EPIC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BMTUSDT",
+      "baseAsset": "BMT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FORMUSDT",
+      "baseAsset": "FORM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XUSDUSDT",
+      "baseAsset": "XUSD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NILUSDT",
+      "baseAsset": "NIL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PARTIUSDT",
+      "baseAsset": "PARTI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MUBARAKUSDT",
+      "baseAsset": "MUBARAK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TUTUSDT",
+      "baseAsset": "TUT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BROCCOLI714USDT",
+      "baseAsset": "BROCCOLI714",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BANANAS31USDT",
+      "baseAsset": "BANANAS31",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GUNUSDT",
+      "baseAsset": "GUN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BABYUSDT",
+      "baseAsset": "BABY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ONDOUSDT",
+      "baseAsset": "ONDO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BIGTIMEUSDT",
+      "baseAsset": "BIGTIME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "VIRTUALUSDT",
+      "baseAsset": "VIRTUAL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KERNELUSDT",
+      "baseAsset": "KERNEL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WCTUSDT",
+      "baseAsset": "WCT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HYPERUSDT",
+      "baseAsset": "HYPER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "INITUSDT",
+      "baseAsset": "INIT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SIGNUSDT",
+      "baseAsset": "SIGN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "STOUSDT",
+      "baseAsset": "STO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SYRUPUSDT",
+      "baseAsset": "SYRUP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KMNOUSDT",
+      "baseAsset": "KMNO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SXTUSDT",
+      "baseAsset": "SXT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NXPCUSDT",
+      "baseAsset": "NXPC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AWEUSDT",
+      "baseAsset": "AWE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HAEDALUSDT",
+      "baseAsset": "HAEDAL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USD1USDT",
+      "baseAsset": "USD1",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HUMAUSDT",
+      "baseAsset": "HUMA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AUSDT",
+      "baseAsset": "A",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SOPHUSDT",
+      "baseAsset": "SOPH",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RESOLVUSDT",
+      "baseAsset": "RESOLV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HOMEUSDT",
+      "baseAsset": "HOME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SPKUSDT",
+      "baseAsset": "SPK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NEWTUSDT",
+      "baseAsset": "NEWT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SAHARAUSDT",
+      "baseAsset": "SAHARA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LAUSDT",
+      "baseAsset": "LA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ERAUSDT",
+      "baseAsset": "ERA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "CUSDT",
+      "baseAsset": "C",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TREEUSDT",
+      "baseAsset": "TREE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "A2ZUSDT",
+      "baseAsset": "A2Z",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TOWNSUSDT",
+      "baseAsset": "TOWNS",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PROVEUSDT",
+      "baseAsset": "PROVE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BFUSDUSDT",
+      "baseAsset": "BFUSD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PLUMEUSDT",
+      "baseAsset": "PLUME",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "DOLOUSDT",
+      "baseAsset": "DOLO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MITOUSDT",
+      "baseAsset": "MITO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WLFIUSDT",
+      "baseAsset": "WLFI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SOMIUSDT",
+      "baseAsset": "SOMI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "OPENUSDT",
+      "baseAsset": "OPEN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "USDEUSDT",
+      "baseAsset": "USDE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "LINEAUSDT",
+      "baseAsset": "LINEA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HOLOUSDT",
+      "baseAsset": "HOLO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "PUMPUSDT",
+      "baseAsset": "PUMP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "AVNTUSDT",
+      "baseAsset": "AVNT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZKCUSDT",
+      "baseAsset": "ZKC",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SKYUSDT",
+      "baseAsset": "SKY",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BARDUSDT",
+      "baseAsset": "BARD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "0GUSDT",
+      "baseAsset": "0G",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "HEMIUSDT",
+      "baseAsset": "HEMI",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "XPLUSDT",
+      "baseAsset": "XPL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MIRAUSDT",
+      "baseAsset": "MIRA",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FFUSDT",
+      "baseAsset": "FF",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EDENUSDT",
+      "baseAsset": "EDEN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "NOMUSDT",
+      "baseAsset": "NOM",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "2ZUSDT",
+      "baseAsset": "2Z",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MORPHOUSDT",
+      "baseAsset": "MORPHO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ASTERUSDT",
+      "baseAsset": "ASTER",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "WALUSDT",
+      "baseAsset": "WAL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "EULUSDT",
+      "baseAsset": "EUL",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ENSOUSDT",
+      "baseAsset": "ENSO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "YBUSDT",
+      "baseAsset": "YB",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZBTUSDT",
+      "baseAsset": "ZBT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "TURTLEUSDT",
+      "baseAsset": "TURTLE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "GIGGLEUSDT",
+      "baseAsset": "GIGGLE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FUSDT",
+      "baseAsset": "F",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KITEUSDT",
+      "baseAsset": "KITE",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "MMTUSDT",
+      "baseAsset": "MMT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SAPIENUSDT",
+      "baseAsset": "SAPIEN",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ALLOUSDT",
+      "baseAsset": "ALLO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BANKUSDT",
+      "baseAsset": "BANK",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "METUSDT",
+      "baseAsset": "MET",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ATUSDT",
+      "baseAsset": "AT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "KGSTUSDT",
+      "baseAsset": "KGST",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "BREVUSDT",
+      "baseAsset": "BREV",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "\u5e01\u5b89\u4eba\u751fUSDT",
+      "baseAsset": "\u5e01\u5b89\u4eba\u751f",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "ZKPUSDT",
+      "baseAsset": "ZKP",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "UUSDT",
+      "baseAsset": "U",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FRAXUSDT",
+      "baseAsset": "FRAX",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "FOGOUSDT",
+      "baseAsset": "FOGO",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "RLUSDUSDT",
+      "baseAsset": "RLUSD",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    },
+    {
+      "symbol": "SENTUSDT",
+      "baseAsset": "SENT",
+      "quoteAsset": "USDT",
+      "status": "TRADING",
+      "permissions": []
+    }
+  ],
+  "count": 445
+}
