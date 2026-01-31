@@ -2,12 +2,16 @@ import time
 import json
 import sys
 import argparse
+from decimal import Decimal
 from strategy.hold_watch import start_scalping_thread
 from strategy.stage1_filter import stage1_scan
 from utils.logger import logger  # 로거 사용
-from storage.repo import fetch_open_positions, save_snapshot
+from storage.repo import fetch_open_positions, save_snapshot, upsert_position
 from config.exchange import MAX_OPEN_POSITIONS
 from utils.ws_price import start_price_stream
+from data.fetch_balance import fetch_active_balances
+from utils.telemetry_report import start_3h_reporter_thread
+from trade.order_executor import get_symbol_filters
 
 
 def load_target_symbols(path: str = "config/target_currency.json") -> list:
@@ -58,12 +62,52 @@ def load_symbols(args) -> list:
 
 ACTIVE_WATCHLIST_KIND = "ACTIVE_WATCHLIST"
 
+
+def seed_positions_from_balance() -> None:
+    balances, _ = fetch_active_balances()
+    if not balances:
+        return
+    for coin in balances:
+        symbol = coin.get("symbol")
+        qty = float(coin.get("available", 0)) + float(coin.get("limit", 0))
+        if symbol and qty > 0:
+            filters = get_symbol_filters(symbol)
+            if filters:
+                min_qty, _, min_notional = filters
+                d_qty = Decimal(str(qty))
+                if d_qty < min_qty:
+                    upsert_position(
+                        symbol=symbol,
+                        status="DUST",
+                        qty=0.0,
+                        avg_price=coin.get("average_price") or None,
+                        data={"reason": "minQty", "qty": qty},
+                    )
+                    continue
+                if min_notional is not None:
+                    upsert_position(
+                        symbol=symbol,
+                        status="OPEN",
+                        qty=qty,
+                        avg_price=coin.get("average_price") or None,
+                        data={"min_notional": str(min_notional)},
+                    )
+                    continue
+            upsert_position(
+                symbol=symbol,
+                status="OPEN",
+                qty=qty,
+                avg_price=coin.get("average_price") or None,
+            )
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--symbols", help="comma-separated symbols for debug (e.g., BTC,ETH,XRP)")
     parser.add_argument("--use-target-file", action="store_true", help="use config/target_currency.json")
     parser.add_argument("--max-watch", type=int, default=0, help="limit number of symbols to watch")
     args = parser.parse_args()
+
+    seed_positions_from_balance()
 
     target_symbols = load_symbols(args)
     open_positions = fetch_open_positions()
@@ -81,6 +125,8 @@ if __name__ == "__main__":
 
     # start websocket price stream for watchlist symbols
     ws_stream = start_price_stream(list(active_symbols))
+
+    start_3h_reporter_thread()
 
     started_symbols = set()
     for symbol in sorted(active_symbols):
@@ -117,7 +163,7 @@ if __name__ == "__main__":
                     else:
                         desired = set(active_symbols) | open_set
 
-            if desired and desired != active_symbols:
+            if desired != active_symbols:
                 save_snapshot(ACTIVE_WATCHLIST_KIND, sorted(desired), min_interval_sec=0, force=True)
                 ws_stream.update_symbols(list(desired))
                 for sym in sorted(desired - started_symbols):

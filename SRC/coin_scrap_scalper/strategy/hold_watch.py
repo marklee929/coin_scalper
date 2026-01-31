@@ -1,10 +1,11 @@
 import datetime, time, threading
+from decimal import Decimal
 from data.fetch_price import get_current_price
 from data.fetch_balance import fetch_active_balances
 from config.exchange import QUOTE_ASSET, MIN_ORDER_QUOTE, ALLOC_PCT, MAX_OPEN_POSITIONS, RESERVE_QUOTE
 from utils.capital import calc_order_quote
 from strategy.watch_trend import get_trend_state, get_relative_position
-from trade.order_executor import buy_market, sell_market
+from trade.order_executor import buy_market, sell_market, get_symbol_filters
 from utils.telegram import send_telegram_message
 from utils.candle_log import get_hourly_candles
 from utils.number import safe_int
@@ -69,6 +70,8 @@ def scalping_loop(symbol: str):
     last_min_order_log_ts = 0.0
     last_active_watch_ts = 0.0
     active_watchlist = None
+    last_dust_log_ts = 0.0
+    dust_mode = False
     trading_state.update({
         "holding": False,
         "qty": 0.0,
@@ -130,6 +133,64 @@ def scalping_loop(symbol: str):
             if holding and trading_state["buy_price"] == 0.0:
                 trading_state.update({"buy_price": price, "high_price": price})
 
+            if holding:
+                filters = get_symbol_filters(symbol)
+                if filters:
+                    min_qty, _, min_notional = filters
+                    d_qty = Decimal(str(qty))
+                    if d_qty < min_qty:
+                        if now - last_dust_log_ts >= 600:
+                            logger.warning(f"⚠️ DUST 보유: {symbol} qty={qty} < minQty={min_qty} (매도 불가)")
+                            last_dust_log_ts = now
+                        upsert_position(
+                            symbol=symbol,
+                            status="DUST",
+                            qty=0.0,
+                            avg_price=trading_state.get("buy_price"),
+                            exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        )
+                        append_event(level="WARNING", type="DUST", symbol=symbol, message="below minQty; ignore position")
+                        if active_watchlist is None:
+                            snap = get_latest_snapshot("ACTIVE_WATCHLIST")
+                            if snap and isinstance(snap.get("data"), list):
+                                active_watchlist = set(snap["data"])
+                        if active_watchlist and symbol in active_watchlist:
+                            active_watchlist.discard(symbol)
+                            save_snapshot("ACTIVE_WATCHLIST", sorted(active_watchlist), min_interval_sec=0, force=True)
+                        dust_mode = True
+                        time.sleep(30)
+                        continue
+                    if min_notional is not None:
+                        d_price = Decimal(str(price))
+                        if (d_qty * d_price) < min_notional:
+                            if now - last_dust_log_ts >= 600:
+                                logger.warning(
+                                    f"⚠️ DUST 보유: {symbol} notional={d_qty * d_price:.8f} < minNotional={min_notional} (매도 불가)"
+                                )
+                                last_dust_log_ts = now
+                            upsert_position(
+                                symbol=symbol,
+                                status="DUST",
+                                qty=0.0,
+                                avg_price=trading_state.get("buy_price"),
+                                exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            )
+                            append_event(level="WARNING", type="DUST", symbol=symbol, message="below minNotional; ignore position")
+                            if active_watchlist is None:
+                                snap = get_latest_snapshot("ACTIVE_WATCHLIST")
+                                if snap and isinstance(snap.get("data"), list):
+                                    active_watchlist = set(snap["data"])
+                            if active_watchlist and symbol in active_watchlist:
+                                active_watchlist.discard(symbol)
+                                save_snapshot("ACTIVE_WATCHLIST", sorted(active_watchlist), min_interval_sec=0, force=True)
+                            dust_mode = True
+                            time.sleep(30)
+                            continue
+
+            if dust_mode:
+                time.sleep(60)
+                continue
+
             open_positions_count = len(fetch_open_positions())
             if not holding and open_positions_count >= MAX_OPEN_POSITIONS:
                 logger.info("⚠️ max 포지션 도달: watch-only 모드, 스캔 스킵")
@@ -150,10 +211,15 @@ def scalping_loop(symbol: str):
             )
 
             # 🔍 캔들 데이터 (1h만, 주기적 갱신)
-            if now - last_candle_ts >= CANDLE_REFRESH_SEC or not cached_c1h:
-                cached_c1h = get_hourly_candles(symbol, 12)  # 최근 12시간
+            if now - last_candle_ts >= CANDLE_REFRESH_SEC:
+                new_c1h = get_hourly_candles(symbol, 12)  # 최근 12시간
                 last_candle_ts = now
+                if new_c1h:
+                    cached_c1h = new_c1h
             c1h = cached_c1h
+            if not c1h or len(c1h) < 6:
+                time.sleep(5)
+                continue
 
             # 📊 분석
             minute_30_trend = get_trend_state(c1h[-6:])  # 최근 6시간 추세
@@ -176,52 +242,72 @@ def scalping_loop(symbol: str):
 
                 # ✅ 익절
                 if profit_ratio > 1.05 and price < peak_price * 0.98 and (minute_30_trend == "down" or (minute_30_trend == "side" and minute_10_trend == "down")):
-                    res = sell_market(symbol, qty)
-                    logger.info(f"✅ 익절: 수익 + 고점 하락 + 추세 하락")
-                    trading_state.update({
-                        "holding": False,
-                        "high_price": 0.0,
-                        "low_price": None
-                    })
+                    res = None
+                    for attempt in range(2):
+                        res = sell_market(symbol, qty)
+                        if res:
+                            break
+                        if attempt == 0:
+                            time.sleep(1)
                     if res:
+                        logger.info("✅ 익절: 수익 + 고점 하락 + 추세 하락")
+                        trading_state.update({
+                            "holding": False,
+                            "qty": 0.0,
+                            "buy_price": 0.0,
+                            "high_price": 0.0,
+                            "low_price": None
+                        })
                         upsert_position(
                             symbol=symbol,
                             status="CLOSED",
                             qty=0.0,
-                            avg_price=trading_state.get("buy_price"),
+                            avg_price=buy_price,
                             exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             pnl_pct=(profit_ratio - 1.0) * 100.0,
                         )
                         append_event(level="INFO", type="EXIT_TP", symbol=symbol, message="take profit")
-                    dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
-                    last_sell_time = now
-                    last_balance_ts = 0
-                    continue
+                        dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
+                        last_sell_time = now
+                        last_balance_ts = 0
+                        continue
+                    logger.warning("❌ 익절 매도 실패: 즉시 재시도 후에도 실패")
+                    append_event(level="WARNING", type="EXIT_FAIL", symbol=symbol, message="take profit sell failed")
 
                 # 🛑 손절
                 # 수정 코드
                 if profit_ratio < 0.97 and (minute_30_trend == "down" or (minute_30_trend == "side" and minute_10_trend == "down")):
-                    res = sell_market(symbol, qty)
-                    logger.info(f"🛑 손절: 손실 + 추세 하락")
-                    trading_state.update({
-                        "holding": False,
-                        "high_price": 0.0,
-                        "low_price": None
-                    })
+                    res = None
+                    for attempt in range(2):
+                        res = sell_market(symbol, qty)
+                        if res:
+                            break
+                        if attempt == 0:
+                            time.sleep(1)
                     if res:
+                        logger.info("🛑 손절: 손실 + 추세 하락")
+                        trading_state.update({
+                            "holding": False,
+                            "qty": 0.0,
+                            "buy_price": 0.0,
+                            "high_price": 0.0,
+                            "low_price": None
+                        })
                         upsert_position(
                             symbol=symbol,
                             status="CLOSED",
                             qty=0.0,
-                            avg_price=trading_state.get("buy_price"),
+                            avg_price=buy_price,
                             exit_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             pnl_pct=(profit_ratio - 1.0) * 100.0,
                         )
                         append_event(level="INFO", type="EXIT_SL", symbol=symbol, message="stop loss")
-                    dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
-                    last_sell_time = now
-                    last_balance_ts = 0
-                    continue
+                        dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
+                        last_sell_time = now
+                        last_balance_ts = 0
+                        continue
+                    logger.warning("❌ 손절 매도 실패: 즉시 재시도 후에도 실패")
+                    append_event(level="WARNING", type="EXIT_FAIL", symbol=symbol, message="stop loss sell failed")
 
             else:
                 #logger.info(f"🔍보유없음 {symbol} 현재가: {price}, 추세: 30={minute_30_trend}, 10={minute_10_trend}, 상대위치: {relative_pos:.1%}")
@@ -258,14 +344,14 @@ def scalping_loop(symbol: str):
 
                 if entry_signal:
                     res = buy_market(symbol, order_amount)
-                    logger.info(f"📥 재매수: 1시간봉 저점 대비 +2% 상승 & 실시간 추세 상승")
-                    trading_state.update({
-                        "holding": True,
-                        "buy_price": price,
-                        "high_price": price,
-                        "low_price": None
-                    })
                     if res:
+                        logger.info("📥 재매수: 1시간봉 저점 대비 +2% 상승 & 실시간 추세 상승")
+                        trading_state.update({
+                            "holding": True,
+                            "buy_price": price,
+                            "high_price": price,
+                            "low_price": None
+                        })
                         upsert_position(
                             symbol=symbol,
                             status="OPEN",
@@ -274,9 +360,11 @@ def scalping_loop(symbol: str):
                             entry_ts=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         )
                         append_event(level="INFO", type="ENTRY", symbol=symbol, message="buy signal")
-                    dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
-                    last_balance_ts = 0
-                    continue
+                        dynamic_cooldown_until = now + COOLDOWN_AFTER_TRADE
+                        last_balance_ts = 0
+                        continue
+                    logger.warning("❌ 매수 실패: 주문 미체결")
+                    append_event(level="WARNING", type="ENTRY_FAIL", symbol=symbol, message="buy failed")
 
             time.sleep(5)
 

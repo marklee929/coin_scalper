@@ -1,6 +1,8 @@
 import requests
 import uuid
 import math
+import time
+from decimal import Decimal, ROUND_DOWN
 from config.auth import build_signed_params
 from config.exchange import BINANCE_BASE_URL, QUOTE_ASSET
 from data.fetch_balance import fetch_active_balances
@@ -8,6 +10,159 @@ from utils.symbols import format_symbol
 from utils.telegram import send_telegram_message
 from utils.logger import logger
 from storage.repo import append_trade, append_event
+
+_LOT_CACHE = {}
+_MIN_NOTIONAL_CACHE = {}
+_LOT_CACHE_TS = 0.0
+_LOT_CACHE_TTL_SEC = 6 * 3600
+
+
+def _extract_lot(symbol_pair: str, symbols):
+    if not symbols:
+        return None
+    target = None
+    for s in symbols:
+        if s.get("symbol") == symbol_pair:
+            target = s
+            break
+    if not target:
+        return None
+    filters = target.get("filters", [])
+    for f in filters:
+        if f.get("filterType") == "LOT_SIZE":
+            return f
+    return None
+
+
+def _extract_min_notional(symbol_pair: str, symbols):
+    if not symbols:
+        return None
+    target = None
+    for s in symbols:
+        if s.get("symbol") == symbol_pair:
+            target = s
+            break
+    if not target:
+        return None
+    filters = target.get("filters", [])
+    for f in filters:
+        if f.get("filterType") == "MIN_NOTIONAL":
+            return f
+    return None
+
+
+def _refresh_lot_cache_full() -> bool:
+    global _LOT_CACHE_TS
+    try:
+        res = requests.get(f"{BINANCE_BASE_URL}/api/v3/exchangeInfo", timeout=8)
+        if res.status_code != 200:
+            return False
+        data = res.json()
+        updated = 0
+        for s in data.get("symbols", []):
+            symbol = s.get("symbol")
+            if not symbol:
+                continue
+            lot = _extract_lot(symbol, [s])
+            if not lot:
+                continue
+            min_qty = lot.get("minQty")
+            step = lot.get("stepSize")
+            if not min_qty or not step:
+                continue
+            if Decimal(str(step)) <= 0 or Decimal(str(min_qty)) <= 0:
+                continue
+            _LOT_CACHE[symbol] = (str(min_qty), str(step))
+            mn = _extract_min_notional(symbol, [s])
+            if mn:
+                val = mn.get("minNotional")
+                if val:
+                    _MIN_NOTIONAL_CACHE[symbol] = str(val)
+            updated += 1
+        if updated:
+            _LOT_CACHE_TS = time.time()
+        return updated > 0
+    except Exception as e:
+        logger.warning(f"LOT_SIZE 전체 캐시 갱신 실패: {e}")
+        return False
+
+
+def _get_lot_size(symbol_pair: str):
+    cached = _LOT_CACHE.get(symbol_pair)
+    if cached:
+        return cached
+
+    try:
+        res = requests.get(f"{BINANCE_BASE_URL}/api/v3/exchangeInfo", params={"symbol": symbol_pair}, timeout=5)
+        if res.status_code == 200:
+            data = res.json()
+            symbols = data.get("symbols", [])
+            lot = _extract_lot(symbol_pair, symbols)
+            mn = _extract_min_notional(symbol_pair, symbols)
+            if mn:
+                val = mn.get("minNotional")
+                if val:
+                    _MIN_NOTIONAL_CACHE[symbol_pair] = str(val)
+        else:
+            lot = None
+        if not lot:
+            now = time.time()
+            if not _LOT_CACHE or (now - _LOT_CACHE_TS) > _LOT_CACHE_TTL_SEC:
+                _refresh_lot_cache_full()
+            return _LOT_CACHE.get(symbol_pair)
+        if not lot:
+            return None
+        min_qty = lot.get("minQty")
+        step = lot.get("stepSize")
+        if not min_qty or not step:
+            return None
+        if Decimal(str(step)) <= 0 or Decimal(str(min_qty)) <= 0:
+            return None
+        _LOT_CACHE[symbol_pair] = (str(min_qty), str(step))
+        return _LOT_CACHE[symbol_pair]
+    except Exception as e:
+        logger.warning(f"LOT_SIZE 조회 실패: {symbol_pair} {e}")
+        return None
+
+
+def _adjust_qty(symbol_pair: str, qty: float):
+    lot = _get_lot_size(symbol_pair)
+    if not lot:
+        return None
+    min_qty, step = lot
+    d_qty = Decimal(str(qty))
+    d_step = Decimal(step)
+    if d_step <= 0:
+        return None
+    d_min = Decimal(min_qty)
+    if d_qty < d_min:
+        return None
+    adj = (d_qty // d_step) * d_step
+    if adj < d_min:
+        return None
+    precision = abs(d_step.as_tuple().exponent)
+    adj_str = format(adj.quantize(Decimal(10) ** -precision, rounding=ROUND_DOWN), "f")
+    return adj_str
+
+
+def get_lot_size(symbol: str):
+    symbol_pair = format_symbol(symbol, QUOTE_ASSET)
+    lot = _get_lot_size(symbol_pair)
+    if not lot:
+        return None
+    min_qty, step = lot
+    return Decimal(min_qty), Decimal(step)
+
+
+def get_symbol_filters(symbol: str):
+    symbol_pair = format_symbol(symbol, QUOTE_ASSET)
+    lot = _get_lot_size(symbol_pair)
+    if not lot:
+        return None
+    min_qty, step = lot
+    min_notional = _MIN_NOTIONAL_CACHE.get(symbol_pair)
+    d_min_notional = Decimal(min_notional) if min_notional else None
+    return Decimal(min_qty), Decimal(step), d_min_notional
 
 
 def place_limit_order(symbol: str, price: float, qty: float, side: str = "BUY", retry: int = 0):
@@ -73,8 +228,9 @@ def place_market_order(symbol: str,
     시장가 주문 (MARKET)
     """
     url = f"{BINANCE_BASE_URL}/api/v3/order"
+    symbol_pair = format_symbol(symbol, QUOTE_ASSET)
     params = {
-        "symbol": format_symbol(symbol, QUOTE_ASSET),
+        "symbol": symbol_pair,
         "side": side.upper(),
         "type": "MARKET"
     }
@@ -85,7 +241,12 @@ def place_market_order(symbol: str,
     else:
         if qty is None:
             raise ValueError("시장가 매도 시 qty를 지정해야 합니다.")
-        params["quantity"] = str(qty)
+        adj_qty = _adjust_qty(symbol_pair, qty)
+        if adj_qty is None:
+            logger.error(f"MARKET SELL 수량 보정 실패(LOT_SIZE): {symbol_pair} qty={qty}")
+            append_event(level="ERROR", type="ORDER_ERROR", symbol=symbol.upper(), message="LOT_SIZE adjust failed or too small")
+            return None
+        params["quantity"] = adj_qty
     if limit_price is not None:
         params["price"] = str(limit_price)
 
