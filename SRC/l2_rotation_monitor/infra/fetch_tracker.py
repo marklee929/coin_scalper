@@ -26,7 +26,12 @@ class FetchTracker:
             self.states[key] = FetchFailState()
         return self.states[key]
 
-    def on_success(self, key: str, now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
+    def on_success(
+        self,
+        key: str,
+        symbol_pair: str | None = None,
+        now_ts: Optional[float] = None,
+    ) -> Tuple[bool, Optional[Dict]]:
         now = now_ts or time.time()
         st = self._get(key)
         if st.fail_count == 0 and not st.in_fail_mode:
@@ -38,6 +43,7 @@ class FetchTracker:
                 "type": "fetch_recovered",
                 "ts": int(now),
                 "key": key,
+                "symbol_pair": symbol_pair,
                 "fail_count": st.fail_count,
                 "fail_duration_sec": duration,
                 "last_error": st.last_error,
@@ -49,7 +55,13 @@ class FetchTracker:
         self.states[key] = FetchFailState()
         return False, None
 
-    def on_fail(self, key: str, reason: str = "", now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
+    def on_fail(
+        self,
+        key: str,
+        symbol_pair: str | None = None,
+        reason: str = "",
+        now_ts: Optional[float] = None,
+    ) -> Tuple[bool, Optional[Dict]]:
         now = now_ts or time.time()
         st = self._get(key)
         st.fail_count += 1
@@ -81,6 +93,7 @@ class FetchTracker:
             "type": "fetch_fail",
             "ts": int(now),
             "key": key,
+            "symbol_pair": symbol_pair,
             "fail_count": st.fail_count,
             "fail_duration_sec": int(duration),
             "last_error": st.last_error,

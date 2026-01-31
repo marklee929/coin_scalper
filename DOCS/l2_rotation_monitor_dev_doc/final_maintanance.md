@@ -386,3 +386,126 @@ final_maintanance.md의 PATCH 1~3을 "현재 코드 구조에 맞게" 적용하�
    - 일부러 BINANCE_BASE_URL을 틀려서 10분 지속 시 fetch_fail 뜨는지
    - 다시 정상으로 바꾸면 fetch_recovered 뜨는지
    - runtime_error 발생해도 프로세스가 유지되는지
+
+좋아. “마지막 패치”는 딱 이것만 하면 돼:
+
+* `fetch_fail` / `fetch_recovered` 이벤트에 **key 유지**
+* 거기에 **symbol_pair 필드 병행 추가**
+
+아래는 **unified diff**(PATCH 1에 들어가는 fetch_tracker 기준)야.
+
+---
+
+## PATCH: fetch_fail / fetch_recovered에 symbol_pair 병행 추가
+
+### 1) `infra/fetch_tracker.py`
+
+```diff
+diff --git a/SRC/l2_rotation_monitor/infra/fetch_tracker.py b/SRC/l2_rotation_monitor/infra/fetch_tracker.py
+index b3a6d2f..d9a1f02 100644
+--- a/SRC/l2_rotation_monitor/infra/fetch_tracker.py
++++ b/SRC/l2_rotation_monitor/infra/fetch_tracker.py
+@@ -1,6 +1,6 @@
+ import time
+ from dataclasses import dataclass, field
+-from typing import Dict, Optional, Tuple
++from typing import Dict, Optional, Tuple
+ 
+ 
+ @dataclass
+@@ -33,7 +33,7 @@ class FetchTracker:
+ 
+     states: Dict[str, FetchFailState] = field(default_factory=dict)
+ 
+-    def on_success(self, key: str, now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
++    def on_success(self, key: str, symbol_pair: str | None = None, now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
+         """
+         성공 시: 실패 모드였다면 recovered 이벤트 1회.
+         return: (should_emit, event_payload)
+@@ -50,6 +50,7 @@ class FetchTracker:
+             payload = {
+                 "type": "fetch_recovered",
+                 "ts": int(now),
+                 "key": key,
++                "symbol_pair": symbol_pair,
+                 "fail_count": st.fail_count,
+                 "fail_duration_sec": duration,
+                 "last_error": st.last_error,
+             }
+@@ -64,7 +65,7 @@ class FetchTracker:
+         self.states[key] = FetchFailState()
+         return False, None
+ 
+-    def on_fail(self, key: str, reason: str = "", now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
++    def on_fail(self, key: str, symbol_pair: str | None = None, reason: str = "", now_ts: Optional[float] = None) -> Tuple[bool, Optional[Dict]]:
+         """
+         실패 시: 누적하다가 10분 이상 지속되면 fetch_fail 이벤트 1회.
+         return: (should_emit, event_payload)
+@@ -95,6 +96,7 @@ class FetchTracker:
+         payload = {
+             "type": "fetch_fail",
+             "ts": int(now),
+             "key": key,
++            "symbol_pair": symbol_pair,
+             "fail_count": st.fail_count,
+             "fail_duration_sec": int(duration),
+             "last_error": st.last_error,
+         }
+         return True, payload
+```
+
+---
+
+### 2) `main.py`에서 호출부에 symbol_pair 넘기기
+
+(실제 파일 라인은 네 프로젝트에 맞춰서 넣으면 됨. 핵심만 diff로)
+
+```diff
+diff --git a/SRC/l2_rotation_monitor/main.py b/SRC/l2_rotation_monitor/main.py
+index b2c0c84..c0c4e0a 100644
+--- a/SRC/l2_rotation_monitor/main.py
++++ b/SRC/l2_rotation_monitor/main.py
+@@ -70,12 +70,12 @@ def run_cycle(...):
+     for symbol, pair in symbol_pairs.items():
+         key = f"klines:{pair}:{TIMEFRAME}"
+         candles = fetch_klines(pair, TIMEFRAME, CANDLE_LIMIT)
+         if not candles:
+-            should_emit, ev = fetch_tracker.on_fail(key, reason="empty_candles")
++            should_emit, ev = fetch_tracker.on_fail(key, symbol_pair=pair, reason="empty_candles")
+             if should_emit and ev:
+                 append_event(ev)
+             continue
+ 
+-        should_emit, ev = fetch_tracker.on_success(key)
++        should_emit, ev = fetch_tracker.on_success(key, symbol_pair=pair)
+         if should_emit and ev:
+             append_event(ev)
+@@ -150,10 +150,10 @@ def main():
+         try:
+             btc_key = f"klines:{BTC_PAIR}:{TIMEFRAME}"
+             btc_candles = fetch_klines(BTC_PAIR, TIMEFRAME, CANDLE_LIMIT)
+             if not btc_candles:
+-                should_emit, ev = fetch_tracker.on_fail(btc_key, reason="empty_btc_candles")
++                should_emit, ev = fetch_tracker.on_fail(btc_key, symbol_pair=BTC_PAIR, reason="empty_btc_candles")
+                 if should_emit and ev:
+                     append_event(ev)
+                 time.sleep(POLL_INTERVAL_SEC)
+                 continue
+ 
+-            should_emit, ev = fetch_tracker.on_success(btc_key)
++            should_emit, ev = fetch_tracker.on_success(btc_key, symbol_pair=BTC_PAIR)
+             if should_emit and ev:
+                 append_event(ev)
+```
+
+---
+
+### 결과 이벤트 예시
+
+```json
+{"type":"fetch_fail","ts":1706xxxx,"key":"klines:ARBUSDT:15m","symbol_pair":"ARBUSDT","fail_count":23,"fail_duration_sec":742,"last_error":"empty_candles"}
+{"type":"fetch_recovered","ts":1706xxxx,"key":"klines:ARBUSDT:15m","symbol_pair":"ARBUSDT","fail_count":23,"fail_duration_sec":905,"last_error":"empty_candles"}
+```
+
+이거까지 들어가면 “장애 분석 로그”는 사람 눈으로도 바로 읽히는 수준까지 마감돼.
+

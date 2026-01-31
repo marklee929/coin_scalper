@@ -92,13 +92,13 @@ def run_cycle(
         key = f"klines:{pair}:{TIMEFRAME}"
         candles = fetch_klines(pair, TIMEFRAME, CANDLE_LIMIT)
         if not candles:
-            should_emit, event = fetch_tracker.on_fail(key, reason="empty_candles")
+            should_emit, event = fetch_tracker.on_fail(key, symbol_pair=pair, reason="empty_candles")
             if should_emit and event:
                 append_event(event)
             logger.warning(f"{symbol} candles empty")
             missing_symbols.append(symbol)
             continue
-        should_emit, event = fetch_tracker.on_success(key)
+        should_emit, event = fetch_tracker.on_success(key, symbol_pair=pair)
         if should_emit and event:
             append_event(event)
         success_state["ts"] = time.time()
@@ -241,13 +241,13 @@ def main() -> None:
             btc_key = f"klines:{BTC_PAIR}:{TIMEFRAME}"
             btc_candles = fetch_klines(BTC_PAIR, TIMEFRAME, CANDLE_LIMIT)
             if not btc_candles:
-                should_emit, event = fetch_tracker.on_fail(btc_key, reason="empty_btc_candles")
+                should_emit, event = fetch_tracker.on_fail(btc_key, symbol_pair=BTC_PAIR, reason="empty_btc_candles")
                 if should_emit and event:
                     append_event(event)
                 time.sleep(POLL_INTERVAL_SEC)
                 continue
 
-            should_emit, event = fetch_tracker.on_success(btc_key)
+            should_emit, event = fetch_tracker.on_success(btc_key, symbol_pair=BTC_PAIR)
             if should_emit and event:
                 append_event(event)
 
