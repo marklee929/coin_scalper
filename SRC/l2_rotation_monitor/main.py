@@ -1,4 +1,5 @@
 ﻿import time
+import traceback
 from typing import Dict
 
 from config.settings import (
@@ -25,6 +26,7 @@ from core.scoring import compute_metrics
 from core.signal_engine import make_signal_key, select_lags, select_leader
 from exchange.binance import fetch_klines
 from infra.counters import increment_counter
+from infra.fetch_tracker import FetchTracker
 from infra.logger import logger, setup_logging
 from infra.notifier import send_telegram_message
 from infra.rate_limiter import RateLimiter
@@ -67,6 +69,7 @@ def run_cycle(
     symbol_pairs: Dict[str, str],
     limiter: RateLimiter,
     success_state: Dict[str, object],
+    fetch_tracker: FetchTracker,
 ) -> None:
     gate_ok, btc_ret_15 = btc_gate(btc_candles, BTC_GATE_ABS_RET_15)
     if not gate_ok:
@@ -86,11 +89,18 @@ def run_cycle(
     volume_skipped = []
     missing_symbols = []
     for symbol, pair in symbol_pairs.items():
+        key = f"klines:{pair}:{TIMEFRAME}"
         candles = fetch_klines(pair, TIMEFRAME, CANDLE_LIMIT)
         if not candles:
+            should_emit, event = fetch_tracker.on_fail(key, reason="empty_candles")
+            if should_emit and event:
+                append_event(event)
             logger.warning(f"{symbol} candles empty")
             missing_symbols.append(symbol)
             continue
+        should_emit, event = fetch_tracker.on_success(key)
+        if should_emit and event:
+            append_event(event)
         success_state["ts"] = time.time()
         success_state["symbol"] = symbol
         success_state["candle_open_time"] = candles[-1]["open_time"]
@@ -163,6 +173,7 @@ def run_cycle(
     allowed, rate_reason = limiter.allow(key)
     if not allowed:
         logger.info(f"rate limit blocked: {rate_reason}")
+        increment_counter("rate_limit_blocked")
         append_event(
             {
                 "ts": int(time.time()),
@@ -199,6 +210,7 @@ def main() -> None:
     setup_logging()
     symbol_pairs = build_symbol_pairs()
     limiter = RateLimiter(MAX_ALERTS_PER_DAY, COOLDOWN_MINUTES)
+    fetch_tracker = FetchTracker()
 
     last_candle_ts = None
     last_heartbeat_ts = 0.0
@@ -208,53 +220,74 @@ def main() -> None:
     last_success_symbol = None
     success_state = {"ts": None, "symbol": None, "candle_open_time": None}
     while True:
-        now = time.time()
-        if HEARTBEAT_INTERVAL_SEC > 0 and now - last_heartbeat_ts >= HEARTBEAT_INTERVAL_SEC:
-            success_age_sec = int(now - last_success_ts) if last_success_ts else None
+        try:
+            now = time.time()
+            if HEARTBEAT_INTERVAL_SEC > 0 and now - last_heartbeat_ts >= HEARTBEAT_INTERVAL_SEC:
+                success_age_sec = int(now - last_success_ts) if last_success_ts else None
+                append_event(
+                    {
+                        "ts": int(now),
+                        "type": "heartbeat",
+                        "status": "alive",
+                        "last_btc_ret_15": last_btc_ret_15,
+                        "last_success_ts": int(last_success_ts) if last_success_ts else None,
+                        "last_success_candle_open_time": last_success_candle_open_time,
+                        "last_success_symbol": last_success_symbol,
+                        "success_age_sec": success_age_sec,
+                    }
+                )
+                last_heartbeat_ts = now
+
+            btc_key = f"klines:{BTC_PAIR}:{TIMEFRAME}"
+            btc_candles = fetch_klines(BTC_PAIR, TIMEFRAME, CANDLE_LIMIT)
+            if not btc_candles:
+                should_emit, event = fetch_tracker.on_fail(btc_key, reason="empty_btc_candles")
+                if should_emit and event:
+                    append_event(event)
+                time.sleep(POLL_INTERVAL_SEC)
+                continue
+
+            should_emit, event = fetch_tracker.on_success(btc_key)
+            if should_emit and event:
+                append_event(event)
+
+            last_success_ts = now
+            last_success_candle_open_time = btc_candles[-1]["open_time"]
+            last_success_symbol = BTC_PAIR
+            success_state["ts"] = last_success_ts
+            success_state["symbol"] = last_success_symbol
+            success_state["candle_open_time"] = last_success_candle_open_time
+
+            if len(btc_candles) >= 2:
+                prev_close = btc_candles[-2]["close"]
+                last_close = btc_candles[-1]["close"]
+                if prev_close:
+                    last_btc_ret_15 = last_close / prev_close - 1
+
+            candle_ts = btc_candles[-1]["open_time"]
+            if candle_ts == last_candle_ts:
+                time.sleep(POLL_INTERVAL_SEC)
+                continue
+
+            last_candle_ts = candle_ts
+            run_cycle(btc_candles, symbol_pairs, limiter, success_state, fetch_tracker)
+            if success_state["ts"] is not None:
+                last_success_ts = success_state["ts"]
+                last_success_symbol = success_state["symbol"]
+                last_success_candle_open_time = success_state["candle_open_time"]
+            time.sleep(POLL_INTERVAL_SEC)
+        except Exception as exc:
+            logger.error(f"main loop error: {exc}")
+            logger.error(traceback.format_exc()[:2000])
             append_event(
                 {
-                    "ts": int(now),
-                    "type": "heartbeat",
-                    "status": "alive",
-                    "last_btc_ret_15": last_btc_ret_15,
-                    "last_success_ts": int(last_success_ts) if last_success_ts else None,
-                    "last_success_candle_open_time": last_success_candle_open_time,
-                    "last_success_symbol": last_success_symbol,
-                    "success_age_sec": success_age_sec,
+                    "ts": int(time.time()),
+                    "type": "runtime_error",
+                    "error": str(exc)[:300],
                 }
             )
-            last_heartbeat_ts = now
+            time.sleep(5)
 
-        btc_candles = fetch_klines(BTC_PAIR, TIMEFRAME, CANDLE_LIMIT)
-        if not btc_candles:
-            time.sleep(POLL_INTERVAL_SEC)
-            continue
-
-        last_success_ts = now
-        last_success_candle_open_time = btc_candles[-1]["open_time"]
-        last_success_symbol = BTC_PAIR
-        success_state["ts"] = last_success_ts
-        success_state["symbol"] = last_success_symbol
-        success_state["candle_open_time"] = last_success_candle_open_time
-
-        if len(btc_candles) >= 2:
-            prev_close = btc_candles[-2]["close"]
-            last_close = btc_candles[-1]["close"]
-            if prev_close:
-                last_btc_ret_15 = last_close / prev_close - 1
-
-        candle_ts = btc_candles[-1]["open_time"]
-        if candle_ts == last_candle_ts:
-            time.sleep(POLL_INTERVAL_SEC)
-            continue
-
-        last_candle_ts = candle_ts
-        run_cycle(btc_candles, symbol_pairs, limiter, success_state)
-        if success_state["ts"] is not None:
-            last_success_ts = success_state["ts"]
-            last_success_symbol = success_state["symbol"]
-            last_success_candle_open_time = success_state["candle_open_time"]
-        time.sleep(POLL_INTERVAL_SEC)
 
 
 if __name__ == "__main__":

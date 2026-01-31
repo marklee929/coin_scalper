@@ -5,6 +5,7 @@ from typing import Dict
 
 from config.settings import STORAGE_DIR
 from infra.logger import logger
+from infra.state_store import atomic_write_json
 
 STATE_PATH = Path(STORAGE_DIR) / "gate_stats.json"
 
@@ -13,6 +14,7 @@ _DEFAULT_COUNTS = {
     "volume_dead_zone_hits": 0,
     "leader_fail": 0,
     "lag_fail": 0,
+    "rate_limit_blocked": 0,
 }
 
 
@@ -40,9 +42,7 @@ def _load_state(now_ts: float) -> Dict:
 
 def _save_state(state: Dict) -> None:
     try:
-        STORAGE_DIR.mkdir(parents=True, exist_ok=True)
-        with open(STATE_PATH, "w", encoding="utf-8") as f:
-            json.dump(state, f, ensure_ascii=False)
+        atomic_write_json(STATE_PATH, state)
     except Exception as exc:
         logger.warning(f"gate_stats.json save failed: {exc}")
 
